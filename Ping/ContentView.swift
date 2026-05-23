@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  Ping
-//
-//  Created by Mohit Vegad on 22/05/2026.
-//
-
 import SwiftUI
 
 struct ContentView: View {
