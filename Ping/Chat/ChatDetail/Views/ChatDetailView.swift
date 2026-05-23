@@ -10,7 +10,14 @@ struct ChatDetailView: View {
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        headerView
+        VStack(spacing: 0) {
+            headerView
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.black)
+
+        
     }
 }
 private extension ChatDetailView {
@@ -76,6 +83,8 @@ private extension ChatDetailView {
         .padding(.horizontal)
         .padding(.vertical, 10)
         .background(Color.black.opacity(0.95))
+        .toolbar(.hidden, for: .navigationBar)
+
 
     }
 }

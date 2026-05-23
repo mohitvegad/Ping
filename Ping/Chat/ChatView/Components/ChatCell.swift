@@ -5,10 +5,7 @@ struct ChatCell: View {
     var chatModel : ChatModel?
     
     var body: some View {
-        ZStack {
-            Color.black.ignoresSafeArea()
-            cellView
-        }
+        cellView
     }
 }
 
@@ -59,6 +56,7 @@ private extension  ChatCell {
         }
         .padding(.horizontal)
         .padding(.vertical, 8)
+        .background(Color.black)
     }
 }
 
