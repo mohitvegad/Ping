@@ -1,9 +1,9 @@
 import Foundation
 
-struct ChatModel: Identifiable {
+struct PingModel: Identifiable {
     let id: String
     let userName: String
-    let messages: [MessageModel]
+    var messages: [MessageModel]
     
     var lastMessage: MessageModel? {
         messages.max(by: { $0.timestamp < $1.timestamp })
@@ -11,21 +11,21 @@ struct ChatModel: Identifiable {
 
 }
 
-extension ChatModel {
+extension PingModel {
     
-    static func mock() -> [ChatModel] {
+    static func mock() -> [PingModel] {
         
-        [ChatModel(
+        [PingModel(
             id: UUID().uuidString,
             userName: "User 1",
             messages: [
                 MessageModel(id: "1", text: "Hey, How are you?", timestamp: Date(), senderId: "11", type: .text, status: .sent)]),
-        ChatModel(
+         PingModel(
             id: UUID().uuidString,
             userName: "User 2",
             messages: [
                 MessageModel(id: "2", text: "Hello", timestamp: Date(), senderId: "12", type: .text, status: .sent)]),
-        ChatModel(
+         PingModel(
             id: UUID().uuidString,
             userName: "User 3",
             messages: [

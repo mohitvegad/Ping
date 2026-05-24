@@ -1,10 +1,8 @@
 import SwiftUI
 
-import SwiftUI
-
-struct ChatsView: View {
+struct PingsView: View {
     
-    @StateObject var viewModel = ChatsViewModel()
+    @StateObject var viewModel = PingsViewViewModel()
     
     var body: some View {
         
@@ -12,11 +10,11 @@ struct ChatsView: View {
             
             VStack(spacing: 0) {
                 
-                ForEach(viewModel.chats) { chat in
+                ForEach(viewModel.pings) { ping in
                     NavigationLink {
-                        ChatDetailView(userName: chat.userName)
+                        PingDetailView(ping: ping)
                     } label: {
-                        ChatCell(chatModel: chat)
+                        PingCell(pingModel: ping)
 
                     }
                     .buttonStyle(.plain)
@@ -32,6 +30,6 @@ struct ChatsView: View {
 
 #Preview {
     NavigationStack {
-        ChatsView()
+        PingsView()
     }
 }

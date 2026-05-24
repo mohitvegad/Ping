@@ -1,26 +1,38 @@
 import SwiftUI
 
 
-struct ChatDetailView: View {
+struct PingDetailView: View {
     
-    var userName: String = ""
+    var ping: PingModel
     var isOnline: Bool = false
     var imageURL: String? = nil
     
     @Environment(\.dismiss) private var dismiss
+    @StateObject private var viewModel: PingDetailViewModel
+    @State private var inputText: String = ""
+    
+    init(ping: PingModel) {
+        self.ping = ping
+        _viewModel = StateObject(
+            wrappedValue: PingDetailViewModel(ping: ping)
+        )
+    }
     
     var body: some View {
         VStack(spacing: 0) {
             headerView
-            Spacer()
+            
+            messagesView
+            
+            inputView
+            
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.black)
-
-        
+        .toolbar(.hidden, for: .tabBar)
     }
 }
-private extension ChatDetailView {
+private extension PingDetailView {
     
     var headerView: some View {
         HStack(spacing: 12) {
@@ -44,7 +56,7 @@ private extension ChatDetailView {
             // MARK: Name + Status
             VStack(alignment: .leading, spacing: 2) {
                 
-                Text(userName)
+                Text(ping.userName)
                     .font(.headline)
                     .foregroundStyle(.white)
                 
@@ -84,12 +96,75 @@ private extension ChatDetailView {
         .padding(.vertical, 10)
         .background(Color.black.opacity(0.95))
         .toolbar(.hidden, for: .navigationBar)
+        
+        
+    }
+}
 
+private extension PingDetailView {
+    
+    var messagesView: some View {
+        
+        ScrollView {
+            
+            VStack(spacing: 12) {
+                
+                ForEach(viewModel.ping.messages) { message in
+                    
+                    HStack {
+                        
+                        
+                        Text(message.text)
+                            .padding(10)
+                            .background(Color.gray.opacity(0.3))
+                            .foregroundStyle(.white)
+                            .cornerRadius(10)
+                        
+                    }
+                    .padding(.horizontal)
+                }
+            }
+            .padding(.top, 10)
+        }
+    }
+}
 
+private extension PingDetailView {
+    
+    var inputView: some View {
+        
+        HStack(spacing: 12) {
+            
+            TextField("Message...", text: $inputText)
+                .padding(10)
+                .background(Color.gray.opacity(0.2))
+                .cornerRadius(10)
+                .foregroundStyle(.white)
+            
+            Button {
+                sendMessage()
+            } label: {
+                Image(systemName: "paperplane.fill")
+                    .foregroundStyle(.green)
+            }
+        }
+        .padding()
+        .background(Color.black)
+    }
+}
+
+private extension PingDetailView {
+    
+    func sendMessage() {
+        
+        guard !inputText.isEmpty else { return }
+        viewModel.sendMessage(inputText)
+        
+        inputText = ""
     }
 }
 
 #Preview {
-    ChatDetailView()
+    PingDetailView(ping: PingModel.mock().first!)
 }
 

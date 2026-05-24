@@ -1,12 +1,12 @@
 import Foundation
 
 struct MessageModel: Identifiable, Codable {
-    let id: String
-    let text: String
-    let timestamp: Date
-    let senderId: String
-    let type: MessageKind
-    let status: MessageStatus
+    var id: String
+    var text: String
+    var timestamp: Date
+    var senderId: String
+    var type: MessageKind
+    var status: MessageStatus
 }
 
 enum MessageKind: String, Codable {

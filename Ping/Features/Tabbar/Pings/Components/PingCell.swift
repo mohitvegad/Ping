@@ -1,15 +1,15 @@
 import SwiftUI
 
-struct ChatCell: View {
+struct PingCell: View {
     
-    var chatModel : ChatModel?
+    var pingModel : PingModel?
     
     var body: some View {
         cellView
     }
 }
 
-private extension  ChatCell {
+private extension  PingCell {
     
     var cellView: some View {
         HStack(spacing: 12) {
@@ -25,20 +25,20 @@ private extension  ChatCell {
                 
                 HStack {
                     
-                    Text(chatModel?.userName ?? "")
+                    Text(pingModel?.userName ?? "")
                         .font(.headline)
                         .foregroundStyle(.white)
                     
                     Spacer()
                     
-                    Text(chatModel?.lastMessage?.timestamp.formattedTime ?? "")
+                    Text(pingModel?.lastMessage?.timestamp.formattedTime ?? "")
                         .font(.caption)
                         .foregroundStyle(.green)
                 }
                 
                 HStack {
                     
-                    Text(chatModel?.lastMessage?.text ?? "")
+                    Text(pingModel?.lastMessage?.text ?? "")
                         .font(.subheadline)
                         .foregroundStyle(.gray)
                         .lineLimit(2)
@@ -61,5 +61,5 @@ private extension  ChatCell {
 }
 
 #Preview {
-    ChatCell()
+    PingCell()
 }
