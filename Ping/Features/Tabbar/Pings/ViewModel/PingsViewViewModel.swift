@@ -3,14 +3,14 @@ import Combine
 
 class PingsViewViewModel: ObservableObject {
     
-    @Published var pings: [PingModel] = []
+    @Published var chats: [ChatModel] = []
    
     init() {
-        pings = PingModel.mock()
+        chats = ChatModel.mock()
     }
     
-    func unreadCount(for ping: PingModel) -> Int {
-        ping.messages.filter { $0.status != .seen }.count
+    func unreadCount(for chat: ChatModel) -> Int {
+        chat.messages.filter { $0.status != .seen }.count
     }
     
     

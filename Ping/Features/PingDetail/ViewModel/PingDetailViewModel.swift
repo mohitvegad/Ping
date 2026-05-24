@@ -3,10 +3,10 @@ import Combine
 
 final class PingDetailViewModel: ObservableObject {
     
-    @Published var ping: PingModel
+    @Published var chat: ChatModel
     
-    init(ping: PingModel) {
-        self.ping = ping
+    init(chat: ChatModel) {
+        self.chat = chat
     }
     
     func sendMessage(_ text: String) {
@@ -15,11 +15,11 @@ final class PingDetailViewModel: ObservableObject {
             id: UUID().uuidString,
             text: text,
             timestamp: Date(),
-            senderId: "me",
+            senderId: CurrentUser.id,
             type: .text,
             status: .sending
         )
         
-        ping.messages.append(message)
+        chat.messages.append(message)
     }
 }

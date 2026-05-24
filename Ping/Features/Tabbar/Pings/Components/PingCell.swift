@@ -2,7 +2,7 @@ import SwiftUI
 
 struct PingCell: View {
     
-    var pingModel : PingModel?
+    var chatModel : ChatModel?
     
     var body: some View {
         cellView
@@ -25,20 +25,20 @@ private extension  PingCell {
                 
                 HStack {
                     
-                    Text(pingModel?.userName ?? "")
+                    Text(chatModel?.userName ?? "")
                         .font(.headline)
                         .foregroundStyle(.white)
                     
                     Spacer()
                     
-                    Text(pingModel?.lastMessage?.timestamp.formattedTime ?? "")
+                    Text(chatModel?.lastMessage?.timestamp.formattedTime ?? "")
                         .font(.caption)
                         .foregroundStyle(.green)
                 }
                 
                 HStack {
                     
-                    Text(pingModel?.lastMessage?.text ?? "")
+                    Text(chatModel?.lastMessage?.text ?? "")
                         .font(.subheadline)
                         .foregroundStyle(.gray)
                         .lineLimit(2)

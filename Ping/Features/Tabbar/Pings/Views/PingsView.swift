@@ -10,11 +10,11 @@ struct PingsView: View {
             
             VStack(spacing: 0) {
                 
-                ForEach(viewModel.pings) { ping in
+                ForEach(viewModel.chats) { chat in
                     NavigationLink {
-                        PingDetailView(ping: ping)
+                        PingDetailView(chat: chat)
                     } label: {
-                        PingCell(pingModel: ping)
+                        PingCell(chatModel: chat)
 
                     }
                     .buttonStyle(.plain)
@@ -22,7 +22,7 @@ struct PingsView: View {
             }
         }
         .background(Color.black)
-        .navigationTitle("Chats")
+        .navigationTitle("Pings")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(.black, for: .navigationBar)
     }

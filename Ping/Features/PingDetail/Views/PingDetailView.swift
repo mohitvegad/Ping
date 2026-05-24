@@ -1,9 +1,13 @@
 import SwiftUI
 
+enum InputState {
+    case idle
+    case typing
+}
 
 struct PingDetailView: View {
     
-    var ping: PingModel
+    var chat: ChatModel
     var isOnline: Bool = false
     var imageURL: String? = nil
     
@@ -11,15 +15,20 @@ struct PingDetailView: View {
     @StateObject private var viewModel: PingDetailViewModel
     @State private var inputText: String = ""
     
-    init(ping: PingModel) {
-        self.ping = ping
+    var inputState: InputState {
+        inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? .idle : .typing
+    }
+    
+    init(chat: ChatModel) {
+        self.chat = chat
         _viewModel = StateObject(
-            wrappedValue: PingDetailViewModel(ping: ping)
+            wrappedValue: PingDetailViewModel(chat: chat)
         )
     }
     
     var body: some View {
         VStack(spacing: 0) {
+            
             headerView
             
             messagesView
@@ -53,10 +62,11 @@ private extension PingDetailView {
                 .frame(width: 40, height: 40)
                 .background(.brown)
                 .clipShape(Circle())
+            
             // MARK: Name + Status
             VStack(alignment: .leading, spacing: 2) {
                 
-                Text(ping.userName)
+                Text(chat.userName)
                     .font(.headline)
                     .foregroundStyle(.white)
                 
@@ -109,16 +119,20 @@ private extension PingDetailView {
             
             VStack(spacing: 12) {
                 
-                ForEach(viewModel.ping.messages) { message in
+                ForEach(viewModel.chat.messages) { message in
+                    let isMe = message.senderId == CurrentUser.id
                     
                     HStack {
                         
-                        
+                        if isMe { Spacer(minLength: 50) }
                         Text(message.text)
                             .padding(10)
                             .background(Color.gray.opacity(0.3))
                             .foregroundStyle(.white)
                             .cornerRadius(10)
+                            .frame(maxWidth: 280, alignment: isMe ? .trailing : .leading)
+                        
+                        if !isMe { Spacer(minLength: 50) }
                         
                     }
                     .padding(.horizontal)
@@ -135,17 +149,47 @@ private extension PingDetailView {
         
         HStack(spacing: 12) {
             
+            Button {
+                
+            } label: {
+                Image(systemName: "plus")
+                    .font(.system(size: 24))
+                    .foregroundStyle(.white)
+            }
+            
             TextField("Message...", text: $inputText)
                 .padding(10)
                 .background(Color.gray.opacity(0.2))
-                .cornerRadius(10)
+                .clipShape(.capsule)
                 .foregroundStyle(.white)
             
-            Button {
-                sendMessage()
-            } label: {
-                Image(systemName: "paperplane.fill")
-                    .foregroundStyle(.green)
+            switch inputState {
+                
+            case .idle:
+                Button {
+                    // camera action
+                } label: {
+                    Image(systemName: "camera")
+                        .font(.system(size: 24))
+                        .foregroundStyle(.white)
+                }
+                
+                Button {
+                    // mic action
+                } label: {
+                    Image(systemName: "mic")
+                        .font(.system(size: 24))
+                        .foregroundStyle(.white)
+                }
+                
+            case .typing:
+                Button {
+                    sendMessage()
+                } label: {
+                    Image(systemName: "paperplane.fill")
+                        .font(.system(size: 24))
+                        .foregroundStyle(.white)
+                }
             }
         }
         .padding()
@@ -165,6 +209,6 @@ private extension PingDetailView {
 }
 
 #Preview {
-    PingDetailView(ping: PingModel.mock().first!)
+    PingDetailView(chat: ChatModel.mock().first!)
 }
 
