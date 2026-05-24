@@ -157,7 +157,7 @@ private extension PingDetailView {
                     .foregroundStyle(.white)
             }
             
-            TextField("Message...", text: $inputText)
+            TextField("Type a message...", text: $inputText)
                 .padding(10)
                 .background(Color.gray.opacity(0.2))
                 .clipShape(.capsule)
