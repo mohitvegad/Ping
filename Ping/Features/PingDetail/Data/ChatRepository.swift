@@ -13,7 +13,7 @@ final class ChatRepository: ChatRepositoryProtocol {
         self.service = service
     }
 
-    func sendMessage(chatId: String,message: MessageModel) {
+    func sendMessage(chatId: String, message: MessageModel) {
         service.sendMessage(chatId: chatId, message: message)
     }
 

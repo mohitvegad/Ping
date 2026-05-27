@@ -1,6 +1,6 @@
 import Foundation
 
-struct ChatModel: Identifiable {
+struct ChatModel: Identifiable, Hashable {
 
     let id: String
     let userId: String

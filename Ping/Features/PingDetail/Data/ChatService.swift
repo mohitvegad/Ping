@@ -20,10 +20,7 @@ final class ChatService {
             .addDocument(data: data)
     }
     
-    func observeMessages(
-        chatId: String,
-        completion: @escaping ([MessageModel]) -> Void
-    ) {
+    func observeMessages(chatId: String, completion: @escaping ([MessageModel]) -> Void) {
 
         db.collection("chats")
             .document(chatId)

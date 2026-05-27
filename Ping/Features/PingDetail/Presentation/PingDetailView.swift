@@ -8,7 +8,7 @@ enum InputState {
 
 struct PingDetailView: View {
     
-    var chat: ChatModel
+    var chat: ChatModel?
     var isOnline: Bool = false
     var imageURL: String? = nil
     
@@ -67,7 +67,7 @@ private extension PingDetailView {
             // MARK: Name + Status
             VStack(alignment: .leading, spacing: 2) {
                 
-                Text(chat.userName)
+                Text(chat?.userName ?? "")
                     .font(.headline)
                     .foregroundStyle(.white)
                 

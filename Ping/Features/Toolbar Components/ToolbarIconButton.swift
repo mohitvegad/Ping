@@ -10,10 +10,9 @@ struct ToolbarIconButton: View {
         Button(action: action) {
             
             Image(systemName: icon)
-                .font(.system(size: 18, weight: .semibold))
+                .font(.system(size: 24, weight: .semibold))
                 .foregroundStyle(.white)
-                .frame(width: 36, height: 36)
-                .background(Color.white.opacity(0.12))
+                .frame(width: 24, height: 24)
                 .clipShape(Circle())
         }
     }
