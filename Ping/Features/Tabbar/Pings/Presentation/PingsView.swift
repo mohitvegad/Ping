@@ -8,18 +8,13 @@ struct PingsView: View {
     
     var body: some View {
         NavigationStack(path: $path) {
-            
-            
             ScrollView {
-                
                 VStack(spacing: 0) {
-                    
-                    ForEach(viewModel.chats) { chat in
+                    ForEach(viewModel.users) { user in
                         NavigationLink {
-                            PingDetailView(chat: chat)
+                            PingDetailView(user: user)
                         } label: {
-                            PingCell(chatModel: chat)
-                            
+                            PingCell(user: user)
                         }
                         .buttonStyle(.plain)
                     }
@@ -44,8 +39,8 @@ struct PingsView: View {
                 }
             }
             // MARK: - NAVIGATION DESTINATION
-            .navigationDestination(for: ChatModel.self) { chat in
-                PingDetailView(chat: chat)
+            .navigationDestination(for: UserModel.self) { user in
+                PingDetailView(user: user)
             }
         }
     }

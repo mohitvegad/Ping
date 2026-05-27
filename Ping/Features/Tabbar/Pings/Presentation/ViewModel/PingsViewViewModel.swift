@@ -3,7 +3,7 @@ import Combine
 
 class PingsViewViewModel: ObservableObject {
     
-    @Published var chats: [ChatModel] = []
+    @Published var users: [UserModel] = []
    
     
     

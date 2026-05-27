@@ -7,12 +7,12 @@ final class PingDetailViewModel: ObservableObject {
 
     @Published var messages: [MessageModel] = []
 
-    let chat: ChatModel
+    let user: UserModel
     private let repository: ChatRepositoryProtocol
     
 
-    init(chat: ChatModel, repository: ChatRepositoryProtocol) {
-        self.chat = chat
+    init(user: UserModel, repository: ChatRepositoryProtocol) {
+        self.user = user
         self.repository = repository
         listenMessages()
     }
@@ -22,7 +22,7 @@ final class PingDetailViewModel: ObservableObject {
 extension PingDetailViewModel {
 
     func listenMessages() {
-        repository.observeMessages(chatId: chat.id) { [weak self] messages in
+        repository.observeMessages(chatId: user.id) { [weak self] messages in
             guard let self else { return }
             DispatchQueue.main.async {
                 self.messages = messages

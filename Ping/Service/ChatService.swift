@@ -4,7 +4,7 @@ final class ChatService {
 
     private let db = Firestore.firestore()
 
-    func sendMessage(chatId: String, message: MessageModel) {
+    func sendMessage(userId: String, message: MessageModel) {
 
         let data: [String: Any] = [
             "text": message.text,
@@ -15,15 +15,15 @@ final class ChatService {
         ]
 
         db.collection("chats")
-            .document(chatId)
+            .document(userId)
             .collection("messages")
             .addDocument(data: data)
     }
     
-    func observeMessages(chatId: String, completion: @escaping ([MessageModel]) -> Void) {
+    func observeMessages(userId: String, completion: @escaping ([MessageModel]) -> Void) {
 
         db.collection("chats")
-            .document(chatId)
+            .document(userId)
             .collection("messages")
             .order(by: "timestamp")
             .addSnapshotListener { snapshot, error in

@@ -4,8 +4,14 @@ import Firebase
 struct PingApp: App {
     
     init() {
-            FirebaseApp.configure()
+        
+        if !UserDefaults.standard.bool(forKey: "didSeedUsers") {
+            UserSeeder().seedUsers()
+            UserDefaults.standard.set(true, forKey: "didSeedUsers")
         }
+        
+        FirebaseApp.configure()
+    }
     //    init() {
     //
     //        let appearance = UINavigationBarAppearance()

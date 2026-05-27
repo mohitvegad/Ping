@@ -1,26 +1,13 @@
 import SwiftUI
 
-struct AddPingView: View {
+struct UsersView: View {
     
     @Environment(\.dismiss) private var dismiss
     
     @State private var searchText: String = ""
     let onSelectUser: (UserModel) -> Void
-    let service = UserService()
 
-    
-    @State private var users: [UserModel] = []
-    
-    var filteredUsers: [UserModel] {
-        
-        if searchText.isEmpty {
-            return users
-        }
-        
-        return users.filter {
-            $0.userName.localizedCaseInsensitiveContains(searchText)
-        }
-    }
+    @StateObject private var userViewModel = UsersViewModel()
     
     var body: some View {
         
@@ -29,10 +16,8 @@ struct AddPingView: View {
             searchBar
             
             ScrollView {
-                
                 VStack(spacing: 0) {
-                    
-                    ForEach(filteredUsers) { user in
+                    ForEach(userViewModel.users) { user in
                         
                         Button {
                             onSelectUser(user)
@@ -59,14 +44,12 @@ struct AddPingView: View {
             }
         }
         .onAppear {
-            service.fetchUsers { users in
-                self.users = users
-            }
+            userViewModel.loadUsers()
         }
     }
 }
 
-private extension AddPingView {
+private extension UsersView {
     
     var searchBar: some View {
         
@@ -88,7 +71,7 @@ private extension AddPingView {
 #Preview {
     
     NavigationStack {
-           AddPingView { user in
+        UsersView { user in
                print("Selected user:", user.userName)
            }
        }
