@@ -33,7 +33,7 @@ struct PingsView: View {
                 }
             }
             .sheet(isPresented: $showAddPingView) {
-                AddPingView { user in
+                UsersView { user in
                     showAddPingView = false
                     path.append(user)
                 }

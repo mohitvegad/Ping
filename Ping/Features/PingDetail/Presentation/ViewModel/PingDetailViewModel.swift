@@ -22,7 +22,7 @@ final class PingDetailViewModel: ObservableObject {
 extension PingDetailViewModel {
 
     func listenMessages() {
-        repository.observeMessages(chatId: user.id) { [weak self] messages in
+        repository.observeMessages(userId: user.id) { [weak self] messages in
             guard let self else { return }
             DispatchQueue.main.async {
                 self.messages = messages
@@ -45,6 +45,6 @@ extension PingDetailViewModel {
             status: .sent
         )
 
-        repository.sendMessage(chatId: chat.id, message: message)
+        repository.sendMessage(userId: user.id, message: message)
     }
 }
