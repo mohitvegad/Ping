@@ -5,35 +5,13 @@ struct AddPingView: View {
     @Environment(\.dismiss) private var dismiss
     
     @State private var searchText: String = ""
-    let onSelectUser: (ChatModel) -> Void
+    let onSelectUser: (UserModel) -> Void
+    let service = UserService()
+
     
-    let users: [ChatModel] = [
-        
-        ChatModel(
-            id: "1",
-            userId: "user_1",
-            userName: "Harry",
-            lastMessage: "Hey 👋",
-            updatedAt: Date()
-        ),
-        
-        ChatModel(
-            id: "2",
-            userId: "user_2",
-            userName: "Olivia",
-            lastMessage: "Let's catch up",
-            updatedAt: Date()
-        ),
-        
-        ChatModel(
-            id: "3",
-            userId: "user_3",
-            userName: "Jack",
-            lastMessage: "Ping me later",
-            updatedAt: Date()
-        )
-    ]
-    var filteredUsers: [ChatModel] {
+    @State private var users: [UserModel] = []
+    
+    var filteredUsers: [UserModel] {
         
         if searchText.isEmpty {
             return users
@@ -60,7 +38,7 @@ struct AddPingView: View {
                             onSelectUser(user)
                             dismiss()
                         } label: {
-                            PingCell(chatModel: user)
+                            PingCell(user: user)
                         }
                         .buttonStyle(.plain)
                     }
@@ -78,6 +56,11 @@ struct AddPingView: View {
                     dismiss()
                 }
                 .foregroundStyle(.white)
+            }
+        }
+        .onAppear {
+            service.fetchUsers { users in
+                self.users = users
             }
         }
     }
