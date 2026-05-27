@@ -31,14 +31,14 @@ private extension  PingCell {
                     
                     Spacer()
                     
-                    Text(chatModel?.lastMessage?.timestamp.formattedTime ?? "")
+                    Text("")
                         .font(.caption)
                         .foregroundStyle(.green)
                 }
                 
                 HStack {
                     
-                    Text(chatModel?.lastMessage?.text ?? "")
+                    Text(chatModel?.lastMessage ?? "")
                         .font(.subheadline)
                         .foregroundStyle(.gray)
                         .lineLimit(2)

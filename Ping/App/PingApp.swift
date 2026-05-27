@@ -1,8 +1,11 @@
 import SwiftUI
-
+import Firebase
 @main
 struct PingApp: App {
     
+    init() {
+            FirebaseApp.configure()
+        }
     //    init() {
     //
     //        let appearance = UINavigationBarAppearance()

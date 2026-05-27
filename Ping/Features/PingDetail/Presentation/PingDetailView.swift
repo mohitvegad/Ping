@@ -1,4 +1,5 @@
 import SwiftUI
+import FirebaseAuth
 
 enum InputState {
     case idle
@@ -22,7 +23,7 @@ struct PingDetailView: View {
     init(chat: ChatModel) {
         self.chat = chat
         _viewModel = StateObject(
-            wrappedValue: PingDetailViewModel(chat: chat)
+            wrappedValue: PingDetailViewModel(chat: chat, repository: ChatRepository(service: ChatService()))
         )
     }
     
@@ -119,23 +120,19 @@ private extension PingDetailView {
             
             VStack(spacing: 12) {
                 
-                ForEach(viewModel.chat.messages) { message in
-                    let isMe = message.senderId == CurrentUser.id
+                ForEach(viewModel.messages) { message in
+                    let isMe = message.senderId == Auth.auth().currentUser?.uid ?? "unknown"
                     
                     HStack {
-                        
-                        if isMe { Spacer(minLength: 50) }
                         Text(message.text)
                             .padding(10)
                             .background(Color.gray.opacity(0.3))
                             .foregroundStyle(.white)
                             .cornerRadius(10)
                             .frame(maxWidth: 280, alignment: isMe ? .trailing : .leading)
-                        
-                        if !isMe { Spacer(minLength: 50) }
-                        
                     }
                     .padding(.horizontal)
+                    .frame(maxWidth: .infinity, alignment: isMe ? .trailing : .leading)
                 }
             }
             .padding(.top, 10)
@@ -194,21 +191,20 @@ private extension PingDetailView {
         }
         .padding()
         .background(Color.black)
+        
     }
 }
 
 private extension PingDetailView {
     
     func sendMessage() {
-        
         guard !inputText.isEmpty else { return }
         viewModel.sendMessage(inputText)
-        
         inputText = ""
     }
 }
 
 #Preview {
-    PingDetailView(chat: ChatModel.mock().first!)
+//    PingDetailView()
 }
 
