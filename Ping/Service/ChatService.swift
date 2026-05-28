@@ -2,6 +2,7 @@ import FirebaseFirestore
 
 final class ChatService {
 
+    
     private let db = Firestore.firestore()
 
     // MARK: - SEND MESSAGE
@@ -23,7 +24,7 @@ final class ChatService {
             .collection("messages")
             .addDocument(data: messageData)
 
-        // 2. Create / update chat (IMPORTANT FOR HOME SCREEN)
+        // 2. Create chat FOR HOME SCREEN
         let chatData: [String: Any] = [
             "participants": [currentUserId, otherUserId],
             "lastMessage": message.text,

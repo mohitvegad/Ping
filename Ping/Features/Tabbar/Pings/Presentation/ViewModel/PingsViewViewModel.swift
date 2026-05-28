@@ -7,6 +7,10 @@ final class PingsViewViewModel: ObservableObject {
 
     private let service = ChatService()
 
+    //---------------------------
+    // FUNCTION
+    //---------------------------
+
     func loadChats() {
 
         guard let userId = CurrentUserSession.shared.id else { return }

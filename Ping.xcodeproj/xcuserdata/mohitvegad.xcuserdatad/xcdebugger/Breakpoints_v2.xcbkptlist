@@ -3,4 +3,114 @@
    uuid = "A276D3BF-C4BB-4058-A58A-93C03BDD5D2F"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "76EC6A40-3487-46E9-9402-0331F8745DA2"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Ping/Features/PingDetail/Presentation/ViewModel/PingDetailViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "35"
+            endingLineNumber = "35"
+            landmarkName = "listenMessages()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "76EC6A40-3487-46E9-9402-0331F8745DA2 - 3e9f715662aacb52"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Array&lt;Ping.MessageModel&gt;) -&gt; () in Ping.PingDetailViewModel.listenMessages() -&gt; ()"
+                  moduleName = "Ping.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mohitvegad/Desktop/Mohit/Personel/GitHub/Ping/Ping/Features/PingDetail/Presentation/ViewModel/PingDetailViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "35"
+                  endingLineNumber = "35">
+               </Location>
+               <Location
+                  uuid = "76EC6A40-3487-46E9-9402-0331F8745DA2 - caaf99ca8bce6eb1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 @Swift.MainActor () -&gt; () in closure #1 (Swift.Array&lt;Ping.MessageModel&gt;) -&gt; () in Ping.PingDetailViewModel.listenMessages() -&gt; ()"
+                  moduleName = "Ping.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mohitvegad/Desktop/Mohit/Personel/GitHub/Ping/Ping/Features/PingDetail/Presentation/ViewModel/PingDetailViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "35"
+                  endingLineNumber = "35">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A4E4E54D-70B7-4D2C-8289-13F233CA4BCA"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Ping/Features/PingDetail/Presentation/ViewModel/PingDetailViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "33"
+            endingLineNumber = "33"
+            landmarkName = "listenMessages()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "A4E4E54D-70B7-4D2C-8289-13F233CA4BCA - 27f6aefb3a86685b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Ping.PingDetailViewModel.listenMessages() -&gt; ()"
+                  moduleName = "Ping.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mohitvegad/Desktop/Mohit/Personel/GitHub/Ping/Ping/Features/PingDetail/Presentation/ViewModel/PingDetailViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "33"
+                  endingLineNumber = "33">
+               </Location>
+               <Location
+                  uuid = "A4E4E54D-70B7-4D2C-8289-13F233CA4BCA - 3e9f715662aaca90"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Array&lt;Ping.MessageModel&gt;) -&gt; () in Ping.PingDetailViewModel.listenMessages() -&gt; ()"
+                  moduleName = "Ping.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mohitvegad/Desktop/Mohit/Personel/GitHub/Ping/Ping/Features/PingDetail/Presentation/ViewModel/PingDetailViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "33"
+                  endingLineNumber = "33">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "BF7BBD67-617F-4574-95A9-0E5FF73A5AAD"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Ping/Features/PingDetail/Presentation/ViewModel/PingDetailViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "25"
+            endingLineNumber = "25"
+            landmarkName = "init(userModel:repository:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

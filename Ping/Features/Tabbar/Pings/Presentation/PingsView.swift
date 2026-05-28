@@ -2,9 +2,6 @@ import SwiftUI
 
 struct PingsView: View {
     
-    //---------------------------
-    //
-    //---------------------------
     
     @StateObject var viewModel = PingsViewViewModel()
     @State private var path = NavigationPath()
@@ -17,8 +14,8 @@ struct PingsView: View {
                     ForEach(viewModel.chats) { chat in
                         NavigationLink {
                             let user = UserModel(
-                                    id: chat.otherUserId,
-                                    firstName: chat.otherUserName,
+                                    id: chat.id,
+                                    firstName: chat.participants.first ?? "",
                                     lastName: ""
                                 )
 
