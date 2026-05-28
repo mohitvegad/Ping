@@ -2,8 +2,8 @@ import SwiftUI
 
 struct PingCell: View {
     
-    var user : UserModel?
-    
+    let model: PingCellModel
+
     var body: some View {
         cellView
     }
@@ -25,7 +25,7 @@ private extension  PingCell {
                 
                 HStack {
                     
-                    Text(user?.userName ?? "")
+                    Text("")
                         .font(.headline)
                         .foregroundStyle(.white)
                     
@@ -38,7 +38,7 @@ private extension  PingCell {
                 
                 HStack {
                     
-                    Text("")
+                    Text(model.subtitle)
                         .font(.subheadline)
                         .foregroundStyle(.gray)
                         .lineLimit(2)
@@ -61,5 +61,5 @@ private extension  PingCell {
 }
 
 #Preview {
-    PingCell()
+    PingCell(model: PingCellModel(id: "", title: "", subtitle: "", imageName: ""))
 }

@@ -1,33 +1,27 @@
 import SwiftUI
 import Firebase
+import FirebaseAuth
+
 @main
 struct PingApp: App {
-    
+
+    @StateObject private var appState = AppState()
+
     init() {
         FirebaseApp.configure()
-
-        if !UserDefaults.standard.bool(forKey: "didSeedUsers") {
-            UserSeeder().seedUsers()
-            UserDefaults.standard.set(true, forKey: "didSeedUsers")
-        }
-        
     }
-    //    init() {
-    //
-    //        let appearance = UINavigationBarAppearance()
-    //        appearance.configureWithOpaqueBackground()
-    //        appearance.backgroundColor = .black
-    //        appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
-    //
-    //        UINavigationBar.appearance().standardAppearance = appearance
-    //        UINavigationBar.appearance().scrollEdgeAppearance = appearance
-    //        UINavigationBar.appearance().compactAppearance = appearance
-    //    }
-    
+
     var body: some Scene {
         WindowGroup {
-            RootTabView()
-                .preferredColorScheme(.dark)
+            if appState.isReady {
+                RootTabView()
+                    .preferredColorScheme(.dark)
+            } else {
+                ProgressView("Loading...")
+                    .onAppear {
+                        appState.start()
+                    }
+            }
         }
     }
 }

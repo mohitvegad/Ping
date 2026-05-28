@@ -7,13 +7,21 @@ final class PingDetailViewModel: ObservableObject {
 
     @Published var messages: [MessageModel] = []
 
-    let user: UserModel
+    let userModel: UserModel
+    let chatId: String
     private let repository: ChatRepositoryProtocol
     
 
-    init(user: UserModel, repository: ChatRepositoryProtocol) {
-        self.user = user
+    init(userModel: UserModel, repository: ChatRepositoryProtocol) {
+        self.userModel = userModel
         self.repository = repository
+        
+        let currentUserId = CurrentUserSession.shared.id ?? ""
+
+        self.chatId = [currentUserId, userModel.id]
+            .sorted()
+            .joined(separator: "_")
+
         listenMessages()
     }
 
@@ -22,7 +30,7 @@ final class PingDetailViewModel: ObservableObject {
 extension PingDetailViewModel {
 
     func listenMessages() {
-        repository.observeMessages(userId: user.id) { [weak self] messages in
+        repository.observeMessages(chatId: chatId) { [weak self] messages in
             guard let self else { return }
             DispatchQueue.main.async {
                 self.messages = messages
@@ -35,16 +43,13 @@ extension PingDetailViewModel {
 extension PingDetailViewModel {
 
     func sendMessage(_ text: String) {
-
         let message = MessageModel(
             id: UUID().uuidString,
             text: text,
             timestamp: Date(),
-            senderId: CurrentUserSession.shared.id ?? "",
-            type: .text,
-            status: .sent
+            senderId: CurrentUserSession.shared.id ?? ""
         )
 
-        repository.sendMessage(userId: user.id, message: message)
+        repository.sendMessage(chatId: chatId, message: message)
     }
 }

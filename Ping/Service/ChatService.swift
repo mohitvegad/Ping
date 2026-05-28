@@ -4,40 +4,57 @@ final class ChatService {
 
     private let db = Firestore.firestore()
 
-    func sendMessage(userId: String, message: MessageModel) {
+    // MARK: - SEND MESSAGE
+    func sendMessage(chatId: String, message: MessageModel) {
 
         let data: [String: Any] = [
             "text": message.text,
             "timestamp": message.timestamp,
-            "senderId": message.senderId,
-            "type": message.type.rawValue,
-            "status": message.status.rawValue
+            "senderId": message.senderId
         ]
 
         db.collection("chats")
-            .document(userId)
+            .document(chatId)
             .collection("messages")
             .addDocument(data: data)
-    }
-    
-    func observeMessages(userId: String, completion: @escaping ([MessageModel]) -> Void) {
 
         db.collection("chats")
-            .document(userId)
+            .document(chatId)
+            .setData([
+                "lastMessage": message.text,
+                "updatedAt": message.timestamp
+            ], merge: true)
+    }
+    // MARK: - OBSERVE MESSAGES
+    func observeMessages(chatId: String,
+                         completion: @escaping ([MessageModel]) -> Void) {
+
+        db.collection("chats")
+            .document(chatId)
             .collection("messages")
             .order(by: "timestamp")
-            .addSnapshotListener { snapshot, error in
+            .addSnapshotListener { snapshot, _ in
 
-                guard let documents = snapshot?.documents else {
-                    completion([])
-                    return
-                }
-
-                let messages: [MessageModel] = documents.compactMap { doc in
-                    try? doc.data(as: MessageModel.self)
-                }
+                let messages: [MessageModel] = snapshot?.documents.compactMap {
+                    try? $0.data(as: MessageModel.self)
+                } ?? []
 
                 completion(messages)
+            }
+    }
+    
+    func observeChats(userId: String,
+                       completion: @escaping ([ChatModel]) -> Void) {
+
+        db.collection("chats")
+            .whereField("participants", arrayContains: userId)
+            .addSnapshotListener { snapshot, _ in
+
+                let chats: [ChatModel] = snapshot?.documents.compactMap {
+                    try? $0.data(as: ChatModel.self)
+                } ?? []
+
+                completion(chats)
             }
     }
 }

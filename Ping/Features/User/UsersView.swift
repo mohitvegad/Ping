@@ -18,12 +18,11 @@ struct UsersView: View {
             ScrollView {
                 VStack(spacing: 0) {
                     ForEach(userViewModel.users) { user in
-                        
                         Button {
                             onSelectUser(user)
                             dismiss()
                         } label: {
-                            PingCell(user: user)
+                            PingCell(model: user.toPingCellModel())
                         }
                         .buttonStyle(.plain)
                     }

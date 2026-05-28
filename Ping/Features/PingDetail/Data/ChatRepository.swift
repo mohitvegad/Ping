@@ -1,8 +1,8 @@
 import Foundation
 
 protocol ChatRepositoryProtocol {
-    func sendMessage(userId: String,message: MessageModel)
-    func observeMessages(userId: String, completion: @escaping ([MessageModel]) -> Void)
+    func sendMessage(chatId: String, message: MessageModel)
+    func observeMessages(chatId: String, completion: @escaping ([MessageModel]) -> Void)
 }
 
 final class ChatRepository: ChatRepositoryProtocol {
@@ -13,11 +13,11 @@ final class ChatRepository: ChatRepositoryProtocol {
         self.service = service
     }
 
-    func sendMessage(userId: String, message: MessageModel) {
-        service.sendMessage(userId: userId, message: message)
+    func sendMessage(chatId: String, message: MessageModel) {
+        service.sendMessage(chatId: chatId, message: message)
     }
 
-    func observeMessages(userId: String, completion: @escaping ([MessageModel]) -> Void) {
-        service.observeMessages(userId: userId, completion: completion)
+    func observeMessages(chatId: String, completion: @escaping ([MessageModel]) -> Void) {
+        service.observeMessages(chatId: chatId, completion: completion)
     }
 }

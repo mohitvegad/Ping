@@ -8,7 +8,7 @@ enum InputState {
 
 struct PingDetailView: View {
     
-    var user: UserModel?
+    var userModel: UserModel?
     var isOnline: Bool = false
     var imageURL: String? = nil
     
@@ -20,10 +20,10 @@ struct PingDetailView: View {
         inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? .idle : .typing
     }
     
-    init(user: UserModel) {
-        self.user = user
+    init(userModel: UserModel) {
+        self.userModel = userModel
         _viewModel = StateObject(
-            wrappedValue: PingDetailViewModel(user: user, repository: ChatRepository(service: ChatService()))
+            wrappedValue: PingDetailViewModel(userModel: userModel, repository: ChatRepository(service: ChatService()))
         )
     }
     
@@ -67,7 +67,7 @@ private extension PingDetailView {
             // MARK: Name + Status
             VStack(alignment: .leading, spacing: 2) {
                 
-                Text(user?.userName ?? "")
+                Text("")
                     .font(.headline)
                     .foregroundStyle(.white)
                 
@@ -108,7 +108,6 @@ private extension PingDetailView {
         .background(Color.black.opacity(0.95))
         .toolbar(.hidden, for: .navigationBar)
         
-        
     }
 }
 
@@ -121,7 +120,7 @@ private extension PingDetailView {
             VStack(spacing: 12) {
                 
                 ForEach(viewModel.messages) { message in
-                    let isMe = message.senderId == Auth.auth().currentUser?.uid ?? "unknown"
+                    let isMe = message.senderId == CurrentUserSession.shared.id ?? "unknown"
                     
                     HStack {
                         Text(message.text)

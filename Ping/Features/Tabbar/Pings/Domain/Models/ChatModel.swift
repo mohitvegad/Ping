@@ -27,3 +27,16 @@ struct ChatModel: Identifiable, Codable, Hashable {
     /// Typing indicator support
     let isTyping: Bool?
 }
+
+
+extension ChatModel {
+
+    func toPingCellModel() -> PingCellModel {
+        PingCellModel(
+            id: otherUserId,
+            title: otherUserName,
+            subtitle: lastMessage ?? "",
+            imageName: "person.fill"
+        )
+    }
+}

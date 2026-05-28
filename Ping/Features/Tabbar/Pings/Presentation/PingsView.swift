@@ -2,6 +2,10 @@ import SwiftUI
 
 struct PingsView: View {
     
+    //---------------------------
+    //
+    //---------------------------
+    
     @StateObject var viewModel = PingsViewViewModel()
     @State private var path = NavigationPath()
     @State private var showAddPingView = false
@@ -10,11 +14,16 @@ struct PingsView: View {
         NavigationStack(path: $path) {
             ScrollView {
                 VStack(spacing: 0) {
-                    ForEach(viewModel.users) { user in
+                    ForEach(viewModel.chats) { chat in
                         NavigationLink {
-                            PingDetailView(user: user)
+                            let user = UserModel(
+                                    id: chat.otherUserId,
+                                    userName: chat.otherUserName
+                                )
+
+                            PingDetailView(userModel: user)
                         } label: {
-                            PingCell(user: user)
+                            PingCell(model: chat.toPingCellModel())
                         }
                         .buttonStyle(.plain)
                     }
@@ -40,7 +49,10 @@ struct PingsView: View {
             }
             // MARK: - NAVIGATION DESTINATION
             .navigationDestination(for: UserModel.self) { user in
-                PingDetailView(user: user)
+                PingDetailView(userModel: user)
+            }
+            .onAppear {
+                viewModel.loadChats()
             }
         }
     }
