@@ -18,7 +18,8 @@ struct PingsView: View {
                         NavigationLink {
                             let user = UserModel(
                                     id: chat.otherUserId,
-                                    userName: chat.otherUserName
+                                    firstName: chat.otherUserName,
+                                    lastName: ""
                                 )
 
                             PingDetailView(userModel: user)

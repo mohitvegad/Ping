@@ -7,36 +7,20 @@ final class UserService {
     func fetchUsers(completion: @escaping ([UserModel]) -> Void) {
 
         db.collection("users")
-            .getDocuments { snapshot, _ in
+            .getDocuments { snapshot, error in
+
+                print("Documents count:", snapshot?.documents.count ?? 0)
+
+                snapshot?.documents.forEach {
+                    print($0.data())
+                }
 
                 let users = snapshot?.documents.compactMap {
                     try? $0.data(as: UserModel.self)
                 } ?? []
 
+                print("Decoded users:", users.count)
+
                 completion(users)
             }
-    }
-}
-
-
-final class UserSeeder {
-
-    private let db = Firestore.firestore()
-
-    func seedUsers() {
-
-        let users: [UserModel] = [
-            .init(id: "user_1", userName: "Harry"),
-            .init(id: "user_2", userName: "Olivia"),
-            .init(id: "user_3", userName: "Jack"),
-            .init(id: "user_4", userName: "Emma"),
-            .init(id: "user_5", userName: "Noah")
-        ]
-
-        for user in users {
-            try? db.collection("users")
-                .document(user.id)
-                .setData(from: user)
-        }
-    }
-}
+    }}

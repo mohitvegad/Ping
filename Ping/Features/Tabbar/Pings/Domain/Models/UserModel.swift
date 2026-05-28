@@ -1,14 +1,18 @@
+import FirebaseFirestore
+
 struct UserModel: Identifiable, Codable, Hashable {
-    let id: String
-    let userName: String
+    
+    @DocumentID var id: String?
+    let firstName: String
+    let lastName: String
 }
 
 extension UserModel {
 
     func toPingCellModel() -> PingCellModel {
         PingCellModel(
-            id: id,
-            title: userName,
+            id: id ?? "",
+            title: "\(firstName) \(lastName)",
             subtitle: "Tap to start chat",
             imageName: "person.fill"
         )

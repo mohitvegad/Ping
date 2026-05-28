@@ -71,7 +71,7 @@ private extension UsersView {
     
     NavigationStack {
         UsersView { user in
-               print("Selected user:", user.userName)
+               print("Selected user:", user.firstName)
            }
        }
 }

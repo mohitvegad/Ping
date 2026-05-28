@@ -16,19 +16,8 @@ final class AppState: ObservableObject {
                 print("Auth failed → stop app")
                 return
             }
-
-            self.seedUsersIfNeeded()
-        }
-    }
-    private func seedUsersIfNeeded() {
-
-        if !UserDefaults.standard.bool(forKey: "didSeedUsers") {
-            UserSeeder().seedUsers()
-            UserDefaults.standard.set(true, forKey: "didSeedUsers")
-        }
-
-        DispatchQueue.main.async {
             self.isReady = true
+
         }
     }
 }

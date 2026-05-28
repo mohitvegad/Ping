@@ -25,7 +25,7 @@ private extension  PingCell {
                 
                 HStack {
                     
-                    Text("")
+                    Text(model.title)
                         .font(.headline)
                         .foregroundStyle(.white)
                     
@@ -45,7 +45,7 @@ private extension  PingCell {
                     
                     Spacer()
                     
-                    Text("1")
+                    Text("")
                         .font(.caption2.bold())
                         .foregroundStyle(.black)
                         .padding(6)

@@ -18,7 +18,7 @@ final class PingDetailViewModel: ObservableObject {
         
         let currentUserId = CurrentUserSession.shared.id ?? ""
 
-        self.chatId = [currentUserId, userModel.id]
+        self.chatId = [currentUserId, userModel.id ?? ""]
             .sorted()
             .joined(separator: "_")
 
@@ -50,6 +50,6 @@ extension PingDetailViewModel {
             senderId: CurrentUserSession.shared.id ?? ""
         )
 
-        repository.sendMessage(chatId: chatId, otherUserId: userModel.id, message: message)
+        repository.sendMessage(chatId: chatId, otherUserId: userModel.id ?? "", message: message)
     }
 }
