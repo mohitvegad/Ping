@@ -8,8 +8,8 @@ struct MessageModel: Identifiable, Codable {
     let text: String
     let timestamp: Date
     let senderId: String
-    let type: MessageType
-    let status: MessageStatus
+//    let type: MessageType
+//    let status: MessageStatus
 }
 
 enum MessageType: String, Codable {
