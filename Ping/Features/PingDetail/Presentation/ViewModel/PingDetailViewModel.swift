@@ -11,7 +11,10 @@ final class PingDetailViewModel: ObservableObject {
     let chatId: String
     private let repository: ChatRepositoryProtocol
     
-
+    //---------------------------
+    // INITIALIZATION
+    //---------------------------
+    
     init(userModel: UserModel, repository: ChatRepositoryProtocol) {
         self.userModel = userModel
         self.repository = repository

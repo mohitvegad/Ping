@@ -45,12 +45,12 @@ private extension  PingCell {
                     
                     Spacer()
                     
-                    Text("")
-                        .font(.caption2.bold())
-                        .foregroundStyle(.black)
-                        .padding(6)
-                        .background(.green)
-                        .clipShape(Circle())
+//                    Text("")
+//                        .font(.caption2.bold())
+//                        .foregroundStyle(.black)
+//                        .padding(6)
+//                        .background(.green)
+//                        .clipShape(Circle())
                 }
             }
         }

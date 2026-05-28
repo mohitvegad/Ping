@@ -3,12 +3,10 @@ import SwiftUI
 struct UsersView: View {
     
     @Environment(\.dismiss) private var dismiss
-    
-    @State private var searchText: String = ""
-    let onSelectUser: (UserModel) -> Void
-
     @StateObject private var userViewModel = UsersViewModel()
     
+    var onSelectUser: (UserModel) -> Void
+
     var body: some View {
         
         VStack(spacing: 0) {
@@ -17,7 +15,7 @@ struct UsersView: View {
             
             ScrollView {
                 VStack(spacing: 0) {
-                    ForEach(userViewModel.users) { user in
+                    ForEach(userViewModel.filteredUsers) { user in
                         Button {
                             onSelectUser(user)
                             dismiss()
@@ -30,12 +28,10 @@ struct UsersView: View {
             }
         }
         .background(Color.black.ignoresSafeArea())
-        .navigationTitle("Add Ping")
+        .navigationTitle("New Ping")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            
             ToolbarItem(placement: .topBarLeading) {
-                
                 Button("Close") {
                     dismiss()
                 }
@@ -57,7 +53,7 @@ private extension UsersView {
             Image(systemName: "magnifyingglass")
                 .foregroundStyle(.gray)
             
-            TextField("Search users...", text: $searchText)
+            TextField("Search users...", text: $userViewModel.searchText)
                 .foregroundStyle(.white)
         }
         .padding()
@@ -68,7 +64,6 @@ private extension UsersView {
 }
 
 #Preview {
-    
     NavigationStack {
         UsersView { user in
                print("Selected user:", user.firstName)
