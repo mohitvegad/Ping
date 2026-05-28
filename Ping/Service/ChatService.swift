@@ -5,9 +5,14 @@ final class ChatService {
     private let db = Firestore.firestore()
 
     // MARK: - SEND MESSAGE
-    func sendMessage(chatId: String, message: MessageModel) {
+    func sendMessage(chatId: String,
+                     otherUserId: String,
+                     message: MessageModel) {
 
-        let data: [String: Any] = [
+        let currentUserId = CurrentUserSession.shared.id ?? ""
+
+        // 1. Save message
+        let messageData: [String: Any] = [
             "text": message.text,
             "timestamp": message.timestamp,
             "senderId": message.senderId
@@ -16,15 +21,20 @@ final class ChatService {
         db.collection("chats")
             .document(chatId)
             .collection("messages")
-            .addDocument(data: data)
+            .addDocument(data: messageData)
+
+        // 2. Create / update chat (IMPORTANT FOR HOME SCREEN)
+        let chatData: [String: Any] = [
+            "participants": [currentUserId, otherUserId],
+            "lastMessage": message.text,
+            "updatedAt": message.timestamp
+        ]
 
         db.collection("chats")
             .document(chatId)
-            .setData([
-                "lastMessage": message.text,
-                "updatedAt": message.timestamp
-            ], merge: true)
+            .setData(chatData, merge: true)
     }
+
     // MARK: - OBSERVE MESSAGES
     func observeMessages(chatId: String,
                          completion: @escaping ([MessageModel]) -> Void) {
@@ -42,9 +52,10 @@ final class ChatService {
                 completion(messages)
             }
     }
-    
+
+    // MARK: - OBSERVE CHATS (HOME SCREEN)
     func observeChats(userId: String,
-                       completion: @escaping ([ChatModel]) -> Void) {
+                      completion: @escaping ([ChatModel]) -> Void) {
 
         db.collection("chats")
             .whereField("participants", arrayContains: userId)

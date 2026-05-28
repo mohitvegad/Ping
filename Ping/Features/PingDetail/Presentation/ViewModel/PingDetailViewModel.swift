@@ -50,6 +50,6 @@ extension PingDetailViewModel {
             senderId: CurrentUserSession.shared.id ?? ""
         )
 
-        repository.sendMessage(chatId: chatId, message: message)
+        repository.sendMessage(chatId: chatId, otherUserId: userModel.id, message: message)
     }
 }
