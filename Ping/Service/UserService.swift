@@ -1,6 +1,10 @@
 import FirebaseFirestore
 
-final class UserService {
+protocol UserServiceProtocol {
+    func fetchUsers(completion: @escaping ([UserModel]) -> Void)
+}
+
+final class UserService: UserServiceProtocol {
 
     private let db = Firestore.firestore()
 

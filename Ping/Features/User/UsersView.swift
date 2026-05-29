@@ -3,9 +3,23 @@ import SwiftUI
 struct UsersView: View {
     
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var userViewModel = UsersViewModel()
+    @StateObject private var viewModel: UsersViewModel
     
     var onSelectUser: (UserModel) -> Void
+    
+    //---------------------------
+    // INITIALIZATION
+    //---------------------------
+
+    
+    init(onSelectUser: @escaping (UserModel) -> Void) {
+
+        self.onSelectUser = onSelectUser
+
+        _viewModel = StateObject(
+            wrappedValue: UsersViewModel(service: UserService())
+        )
+    }
 
     var body: some View {
         
@@ -15,7 +29,7 @@ struct UsersView: View {
             
             ScrollView {
                 VStack(spacing: 0) {
-                    ForEach(userViewModel.filteredUsers) { user in
+                    ForEach(viewModel.filteredUsers) { user in
                         Button {
                             onSelectUser(user)
                             dismiss()
@@ -39,7 +53,7 @@ struct UsersView: View {
             }
         }
         .onAppear {
-            userViewModel.loadUsers()
+            viewModel.loadUsers()
         }
     }
 }
@@ -53,7 +67,7 @@ private extension UsersView {
             Image(systemName: "magnifyingglass")
                 .foregroundStyle(.gray)
             
-            TextField("Search users...", text: $userViewModel.searchText)
+            TextField("Search users...", text: $viewModel.searchText)
                 .foregroundStyle(.white)
         }
         .padding()
@@ -61,12 +75,4 @@ private extension UsersView {
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .padding()
     }
-}
-
-#Preview {
-    NavigationStack {
-        UsersView { user in
-               print("Selected user:", user.firstName)
-           }
-       }
 }

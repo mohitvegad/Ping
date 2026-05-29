@@ -6,8 +6,16 @@ final class UsersViewModel: ObservableObject {
     @Published var users: [UserModel] = []
     @Published var searchText: String = ""
 
-    private let userService = UserService()
+    private let userService: UserServiceProtocol
 
+    //---------------------------
+    // INITIALISATION
+    //---------------------------
+
+    init(service: UserServiceProtocol) {
+        userService = service
+    }
+    
     //---------------------------
     // Computed Property
     //---------------------------
@@ -19,7 +27,7 @@ final class UsersViewModel: ObservableObject {
         }
         
         return users.filter {
-            var username: String = $0.firstName + " " + $0.lastName
+            let username: String = $0.firstName + " " + $0.lastName
             return username.localizedCaseInsensitiveContains(searchText)
         }
     }
