@@ -24,6 +24,9 @@ final class PingDetailViewModel: ObservableObject {
         self.chatId = [currentUserId, userModel.id ?? ""]
             .sorted()
             .joined(separator: "_")
+        print("USER ID =========== \(userModel.id ?? "")")
+        print("CURRENT USER ID =========== \(currentUserId)")
+        print("CHAT ID =========== \(chatId)")
 
         listenMessages()
     }

@@ -4,7 +4,7 @@ struct PingsView: View {
     
     @StateObject var viewModel = PingsViewViewModel()
     @State private var path = NavigationPath()
-    @State private var showAddPingView = false
+    @State private var showAddUsersView = false
     
     var body: some View {
         NavigationStack(path: $path) {
@@ -33,14 +33,14 @@ struct PingsView: View {
             .toolbar {
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     ToolbarIconButton(icon: "plus.circle.fill") {
-                        showAddPingView = true
+                        showAddUsersView = true
                     }
                 }
             }
-            .sheet(isPresented: $showAddPingView) {
+            .sheet(isPresented: $showAddUsersView) {
                 NavigationStack {
                     UsersView { user in
-                        showAddPingView = false
+                        showAddUsersView = false
                         path.append(user)
                     }
                 }

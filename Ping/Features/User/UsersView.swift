@@ -11,7 +11,6 @@ struct UsersView: View {
     // INITIALIZATION
     //---------------------------
 
-    
     init(onSelectUser: @escaping (UserModel) -> Void) {
 
         self.onSelectUser = onSelectUser
