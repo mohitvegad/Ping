@@ -12,9 +12,7 @@ struct UsersView: View {
     //---------------------------
 
     init(onSelectUser: @escaping (UserModel) -> Void) {
-
         self.onSelectUser = onSelectUser
-
         _viewModel = StateObject(
             wrappedValue: UsersViewModel(service: UserService())
         )
@@ -23,7 +21,7 @@ struct UsersView: View {
     var body: some View {
         
         VStack(spacing: 0) {
-            
+
             searchBar
             
             ScrollView {

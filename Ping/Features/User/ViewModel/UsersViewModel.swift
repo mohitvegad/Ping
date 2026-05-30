@@ -31,10 +31,6 @@ final class UsersViewModel: ObservableObject {
             return username.localizedCaseInsensitiveContains(searchText)
         }
     }
-
-    //---------------------------
-    // Computed Property
-    //---------------------------
     
     func loadUsers() {
         userService.fetchUsers { [weak self] users in

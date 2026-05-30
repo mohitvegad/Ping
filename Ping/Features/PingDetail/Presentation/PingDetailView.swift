@@ -20,10 +20,14 @@ struct PingDetailView: View {
         inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? .idle : .typing
     }
     
-    init(userModel: UserModel) {
+    //---------------------------
+    // INITIALIZATION
+    //---------------------------
+    
+    init(chatId: String, userModel: UserModel) {
         self.userModel = userModel
         _viewModel = StateObject(
-            wrappedValue: PingDetailViewModel(userModel: userModel, repository: ChatRepository(service: ChatService()))
+            wrappedValue: PingDetailViewModel(chatId: chatId, userModel: userModel, repository: ChatRepository(service: ChatService()))
         )
     }
     

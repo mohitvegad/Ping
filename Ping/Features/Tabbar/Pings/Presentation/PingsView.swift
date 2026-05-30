@@ -17,7 +17,7 @@ struct PingsView: View {
                                 firstName: chat.participants.first ?? "",
                                 lastName: ""
                             )
-                            PingDetailView(userModel: user)
+                            PingDetailView(chatId: user.id ?? "", userModel: user)
                         } label: {
                             PingCell(model: chat.toPingCellModel())
                         }
@@ -46,9 +46,15 @@ struct PingsView: View {
                 }
             }
             
-            // MARK: - NAVIGATION DESTINATION
+            // MARK: - NAVIGATION DESTINATION TO PING DETAIL FROM USER SELECTION
+            
             .navigationDestination(for: UserModel.self) { user in
-                PingDetailView(userModel: user)
+                let currentUserId = CurrentUserSession.shared.id ?? ""
+
+                let chatId = [currentUserId, user.id ?? ""]
+                    .sorted()
+                    .joined(separator: "_")
+                PingDetailView(chatId: chatId, userModel: user)
             }
             .onAppear {
                 viewModel.loadChats()

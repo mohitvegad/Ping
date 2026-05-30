@@ -15,19 +15,11 @@ final class PingDetailViewModel: ObservableObject {
     // INITIALIZATION
     //---------------------------
     
-    init(userModel: UserModel, repository: ChatRepositoryProtocol) {
+    init(chatId: String, userModel: UserModel, repository: ChatRepositoryProtocol) {
         self.userModel = userModel
         self.repository = repository
+        self.chatId =  chatId
         
-        let currentUserId = CurrentUserSession.shared.id ?? ""
-
-        self.chatId = [currentUserId, userModel.id ?? ""]
-            .sorted()
-            .joined(separator: "_")
-        print("USER ID =========== \(userModel.id ?? "")")
-        print("CURRENT USER ID =========== \(currentUserId)")
-        print("CHAT ID =========== \(chatId)")
-
         listenMessages()
     }
 

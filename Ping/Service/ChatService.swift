@@ -2,13 +2,10 @@ import FirebaseFirestore
 
 final class ChatService {
 
-    
     private let db = Firestore.firestore()
 
     // MARK: - SEND MESSAGE
-    func sendMessage(chatId: String,
-                     otherUserId: String,
-                     message: MessageModel) {
+    func sendMessage(chatId: String, otherUserId: String, message: MessageModel) {
 
         let currentUserId = CurrentUserSession.shared.id ?? ""
 
@@ -36,9 +33,23 @@ final class ChatService {
             .setData(chatData, merge: true)
     }
 
+    // MARK: - OBSERVE CHATS (HOME SCREEN)
+    func observeChats(userId: String, completion: @escaping ([ChatModel]) -> Void) {
+
+        db.collection("chats")
+            .whereField("participants", arrayContains: userId)
+            .addSnapshotListener { snapshot, _ in
+
+                let chats: [ChatModel] = snapshot?.documents.compactMap {
+                    try? $0.data(as: ChatModel.self)
+                } ?? []
+
+                completion(chats)
+            }
+    }
+
     // MARK: - OBSERVE MESSAGES
-    func observeMessages(chatId: String,
-                         completion: @escaping ([MessageModel]) -> Void) {
+    func observeMessages(chatId: String, completion: @escaping ([MessageModel]) -> Void) {
 
         db.collection("chats")
             .document(chatId)
@@ -54,19 +65,5 @@ final class ChatService {
             }
     }
 
-    // MARK: - OBSERVE CHATS (HOME SCREEN)
-    func observeChats(userId: String,
-                      completion: @escaping ([ChatModel]) -> Void) {
 
-        db.collection("chats")
-            .whereField("participants", arrayContains: userId)
-            .addSnapshotListener { snapshot, _ in
-
-                let chats: [ChatModel] = snapshot?.documents.compactMap {
-                    try? $0.data(as: ChatModel.self)
-                } ?? []
-
-                completion(chats)
-            }
-    }
 }
