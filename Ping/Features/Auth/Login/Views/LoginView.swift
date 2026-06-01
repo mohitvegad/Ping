@@ -42,36 +42,44 @@ struct LoginView: View {
                 .foregroundColor(.white)
                 .padding(.horizontal)
 
-            // ERROR
-            if let error = viewModel.errorMessage {
-                Text(error)
+            // MARK: - STATE UI
+
+            switch viewModel.state {
+
+            case .idle:
+                EmptyView()
+
+            case .loading:
+                ProgressView()
+                    .tint(.white)
+
+            case .success:
+                Text("Login Success")
+                    .foregroundColor(.green)
+
+            case .error(let message):
+                Text(message)
                     .foregroundColor(.red)
                     .font(.caption)
             }
 
             // BUTTON
             Button {
-
                 viewModel.login()
-
             } label: {
 
-                if viewModel.isLoading {
-                    ProgressView().tint(.white)
-                } else {
-                    Text("Login")
-                        .fontWeight(.bold)
-                        .frame(maxWidth: .infinity)
-                }
+                Text("Login")
+                    .fontWeight(.bold)
+                    .frame(maxWidth: .infinity)
+                    .padding()
             }
-            .padding()
             .background(Color.blue)
             .foregroundColor(.white)
             .cornerRadius(12)
             .padding(.horizontal)
-            .disabled(viewModel.email.isEmpty ||
-                      viewModel.password.isEmpty ||
-                      viewModel.isLoading)
+            .disabled(viewModel.state == .loading ||
+                      viewModel.email.isEmpty ||
+                      viewModel.password.isEmpty)
 
             Spacer()
         }
@@ -79,6 +87,6 @@ struct LoginView: View {
     }
 }
 
-#Preview {
+#Preview {  
     LoginView()
 }

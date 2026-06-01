@@ -1,65 +1,64 @@
 import Foundation
 import Combine
 
+enum LoginViewState: Equatable {
+
+    case idle
+    case loading
+    case success
+    case error(String)
+}
+
+import Foundation
+
 @MainActor
 final class LoginViewModel: ObservableObject {
 
-    // MARK: - INPUT
-    @Published var email: String = ""
-    @Published var password: String = ""
+    @Published var email = ""
+    @Published var password = ""
 
-    // MARK: - OUTPUT STATE
-    @Published var isLoading: Bool = false
-    @Published var errorMessage: String?
+    @Published var state: LoginViewState = .idle
 
     private let repository: AuthRepositoryProtocol
 
-    // MARK: - INIT
     init(repository: AuthRepositoryProtocol) {
         self.repository = repository
     }
 
-    // MARK: - LOGIN ACTION
     func login() {
 
         let email = email.trimmingCharacters(in: .whitespacesAndNewlines)
         let password = password.trimmingCharacters(in: .whitespacesAndNewlines)
 
         guard !email.isEmpty, !password.isEmpty else {
-            errorMessage = "Email and password required"
+            state = .error("Please fill all fields")
             return
         }
 
-        isLoading = true
-        errorMessage = nil
+        state = .loading
 
         repository.login(email: email, password: password) { [weak self] result in
 
-            guard let self else { return }
-
             DispatchQueue.main.async {
-                self.isLoading = false
+
+                guard let self else { return }
 
                 switch result {
 
                 case .success:
 
-                    print("LOGIN SUCCESS → Navigate to Home")
-
+                    self.state = .success
+                    print("LOGIN SUCCESS → navigate")
 
                 case .failure(let error):
 
-                    self.errorMessage = error.localizedDescription
+                    self.state = .error(error.localizedDescription)
                 }
             }
         }
     }
 
-    // MARK: - OPTIONAL: CLEAR STATE
     func reset() {
-        email = ""
-        password = ""
-        errorMessage = nil
-        isLoading = false
+        state = .idle
     }
 }

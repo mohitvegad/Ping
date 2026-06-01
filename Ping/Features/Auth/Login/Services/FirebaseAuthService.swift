@@ -5,16 +5,9 @@ final class FirebaseAuthService: AuthServiceProtocol {
 
     // MARK: - LOGIN
 
-    func login(
-        email: String,
-        password: String,
-        completion: @escaping (Result<String, Error>) -> Void
-    ) {
+    func login(email: String, password: String, completion: @escaping (Result<String, Error>) -> Void) {
 
-        Auth.auth().signIn(
-            withEmail: email,
-            password: password
-        ) { result, error in
+        Auth.auth().signIn(withEmail: email, password: password) { result, error in
 
             if let error {
                 completion(.failure(error))
@@ -38,10 +31,7 @@ final class FirebaseAuthService: AuthServiceProtocol {
         completion: @escaping (Result<String, Error>) -> Void
     ) {
 
-        Auth.auth().createUser(
-            withEmail: email,
-            password: password
-        ) { result, error in
+        Auth.auth().createUser(withEmail: email, password: password) { result, error in
 
             if let error {
                 completion(.failure(error))
