@@ -8,7 +8,7 @@ struct RootView: View {
 
         switch appState.state {
 
-        case .loading:
+        case .idle:
             ProgressView()
 
         case .loggedOut:

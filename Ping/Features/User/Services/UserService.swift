@@ -1,39 +1,34 @@
 import FirebaseFirestore
 
-protocol UserServiceProtocol {
-    func createUser(user: UserModel, completion: @escaping (Bool) -> Void)
-    func fetchCurrentUser(uid: String, completion: @escaping (UserModel?) -> Void)
-    func fetchUsers(completion: @escaping ([UserModel]) -> Void)
-}
 
 final class UserService: UserServiceProtocol {
     
     private let db = Firestore.firestore()
 
-    func createUser(user: UserModel, completion: @escaping (Bool) -> Void) {
-
-        guard let uid = user.id else {
-            completion(false)
-            return
-        }
-
-        db.collection("users")
-            .document(uid)
-            .setData([
-                "firstName": user.firstName,
-                "lastName": user.lastName
-            ]) { error in
-
-                if let error = error {
-                    print("User creation failed:", error.localizedDescription)
-                    completion(false)
-                    return
-                }
-
-                print("User created successfully")
-                completion(true)
-            }
-    }
+//    func createUser(user: UserModel, completion: @escaping (Bool) -> Void) {
+//
+//        guard let uid = user.id else {
+//            completion(false)
+//            return
+//        }
+//
+//        db.collection("users")
+//            .document(uid)
+//            .setData([
+//                "firstName": user.firstName,
+//                "lastName": user.lastName
+//            ]) { error in
+//
+//                if let error = error {
+//                    print("User creation failed:", error.localizedDescription)
+//                    completion(false)
+//                    return
+//                }
+//
+//                print("User created successfully")
+//                completion(true)
+//            }
+//    }
     
     func fetchCurrentUser(uid: String, completion: @escaping (UserModel?) -> Void) {
         db.collection("users")
@@ -45,7 +40,7 @@ final class UserService: UserServiceProtocol {
     }
     
         
-    func fetchUsers(completion: @escaping ([UserModel]) -> Void) {
+    func fetchUsers(uid: String, completion: @escaping ([UserModel]) -> Void) {
         
         db.collection("users")
             .getDocuments { snapshot, error in

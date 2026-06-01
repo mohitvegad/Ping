@@ -6,12 +6,12 @@ import Combine
 final class AppState: ObservableObject {
 
     enum State {
-        case loading
+        case idle
         case loggedIn(String)
         case loggedOut
     }
 
-    @Published var state: State = .loading
+    @Published var state: State = .idle
 
     private let keychain = KeychainManager.shared
 
@@ -19,7 +19,7 @@ final class AppState: ObservableObject {
 
         if let uid = keychain.get("userId") {
             print("UID FOUND:", uid)
-            CurrentUserSession.shared.userId = uid
+            CurrentUserSession.shared.setUserId(uid)
             state = .loggedIn(uid)
 
         } else {
@@ -29,13 +29,13 @@ final class AppState: ObservableObject {
 
     func loginSuccess(uid: String) {
         keychain.save(uid, key: "userId")
-        CurrentUserSession.shared.userId = uid
+        CurrentUserSession.shared.setUserId(uid)
         state = .loggedIn(uid)
     }
 
     func logout() {
         keychain.delete("userId")
-        CurrentUserSession.shared.userId = nil
+        CurrentUserSession.shared.clear()
         state = .loggedOut
     }
 }

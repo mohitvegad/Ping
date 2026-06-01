@@ -25,11 +25,7 @@ final class FirebaseAuthService: AuthServiceProtocol {
 
     // MARK: - SIGN UP
 
-    func signUp(
-        email: String,
-        password: String,
-        completion: @escaping (Result<String, Error>) -> Void
-    ) {
+    func signUp(email: String, password: String, completion: @escaping (Result<String, Error>) -> Void) {
 
         Auth.auth().createUser(withEmail: email, password: password) { result, error in
 

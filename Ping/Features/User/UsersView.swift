@@ -1,32 +1,40 @@
 import SwiftUI
 
 struct UsersView: View {
-    
+
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: UsersViewModel
-    
+
+    var currentUserId: String
     var onSelectUser: (UserModel) -> Void
-    
+
     //---------------------------
     // INITIALIZATION
     //---------------------------
 
-    init(onSelectUser: @escaping (UserModel) -> Void) {
+    init(currentUserId: String, onSelectUser: @escaping (UserModel) -> Void) {
+        self.currentUserId = currentUserId
         self.onSelectUser = onSelectUser
+
+        let service = UserService()
+        let repository = UserRepository(service: service)
+
         _viewModel = StateObject(
-            wrappedValue: UsersViewModel(service: UserService())
+            wrappedValue: UsersViewModel(repository: repository)
         )
     }
 
     var body: some View {
-        
+
         VStack(spacing: 0) {
 
             searchBar
-            
+
             ScrollView {
                 VStack(spacing: 0) {
+
                     ForEach(viewModel.filteredUsers) { user in
+
                         Button {
                             onSelectUser(user)
                             dismiss()
@@ -50,7 +58,7 @@ struct UsersView: View {
             }
         }
         .onAppear {
-            viewModel.loadUsers()
+            viewModel.loadUsers(currentUserId: currentUserId)
         }
     }
 }

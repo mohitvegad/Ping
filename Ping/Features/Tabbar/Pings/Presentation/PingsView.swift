@@ -3,40 +3,34 @@ import SwiftUI
 struct PingsView: View {
 
     @StateObject var viewModel = PingsViewViewModel()
+
     @State private var path = NavigationPath()
     @State private var showAddUsersView = false
 
+    var currentUserId: String
+
     var body: some View {
+
         NavigationStack(path: $path) {
 
             ScrollView {
+
                 VStack(spacing: 0) {
 
                     ForEach(viewModel.chats) { chat in
 
                         NavigationLink {
 
-//                            let currentUserId = CurrentUserSession.shared.id ?? ""
-                            let currentUserId = "CurrentUserSession.shared.id ?? "
+                            if let currentUser = CurrentUserSession.shared.user {
 
+                                let otherUserId = chat.otherUserId(currentUserId: currentUserId)
 
-                            let otherUserId = chat.otherUserId(currentUserId: currentUserId)
-
-                            let user = UserModel(
-                                id: otherUserId,
-                                firstName: "",
-                                lastName: ""
-                            )
-
-//                            if let currentUser = CurrentUserSession.shared.user {
-//
 //                                PingDetailView(
 //                                    chatId: chat.id ?? "",
 //                                    currentUser: currentUser,
-//                                    userModel: user,
-//                                    repository: ChatRepository(service: ChatService())
+//                                    userModel: user
 //                                )
-//                            }
+                            }
 
                         } label: {
                             PingCell(model: chat.toPingCellModel())
@@ -48,7 +42,6 @@ struct PingsView: View {
             .background(Color.black)
             .navigationTitle("Pings")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(.black, for: .navigationBar)
 
             .toolbar {
                 ToolbarItemGroup(placement: .topBarTrailing) {
@@ -60,7 +53,7 @@ struct PingsView: View {
 
             .sheet(isPresented: $showAddUsersView) {
                 NavigationStack {
-                    UsersView { user in
+                    UsersView(currentUserId: currentUserId) { user in
                         showAddUsersView = false
                         path.append(user)
                     }

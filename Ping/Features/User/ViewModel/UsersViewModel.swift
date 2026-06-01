@@ -6,35 +6,43 @@ final class UsersViewModel: ObservableObject {
     @Published var users: [UserModel] = []
     @Published var searchText: String = ""
 
-    private let userService: UserServiceProtocol
+    private let repository: UserRepositoryProtocol
 
     //---------------------------
-    // INITIALISATION
+    // INITIALIZATION
     //---------------------------
 
-    init(service: UserServiceProtocol) {
-        userService = service
+    init(repository: UserRepositoryProtocol) {
+        self.repository = repository
     }
-    
+
     //---------------------------
     // Computed Property
     //---------------------------
 
     var filteredUsers: [UserModel] {
-        
+
         if searchText.isEmpty {
             return users
         }
-        
+
         return users.filter {
-            let username: String = $0.firstName + " " + $0.lastName
+            let username = "\($0.firstName) \($0.lastName)"
             return username.localizedCaseInsensitiveContains(searchText)
         }
     }
-    
-    func loadUsers() {
-        userService.fetchUsers { [weak self] users in
-            self?.users = users
+
+    //---------------------------
+    // LOAD USERS
+    //---------------------------
+
+    func loadUsers(currentUserId: String) {
+
+        repository.getUsers(uid: currentUserId) { [weak self] users in
+
+            DispatchQueue.main.async {
+                self?.users = users
+            }
         }
     }
 }
