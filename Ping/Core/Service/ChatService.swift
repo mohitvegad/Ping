@@ -5,9 +5,7 @@ final class ChatService {
     private let db = Firestore.firestore()
 
     // MARK: - SEND MESSAGE
-    func sendMessage(chatId: String, otherUserId: String, message: MessageModel) {
-
-        let currentUserId = CurrentUserSession.shared.id ?? ""
+    func sendMessage(chatId: String, currentUser: UserModel, otherUser: UserModel, message: MessageModel) {
 
         // 1. Save message
         let messageData: [String: Any] = [
@@ -21,9 +19,25 @@ final class ChatService {
             .collection("messages")
             .addDocument(data: messageData)
 
-        // 2. Create chat FOR HOME SCREEN
+        // 2. Update chat preview
         let chatData: [String: Any] = [
-            "participants": [currentUserId, otherUserId],
+
+            "participants": [
+                currentUser.id ?? "",
+                otherUser.id ?? ""
+            ],
+
+            "participantInfo": [
+
+                currentUser.id ?? "": [
+                    "name": currentUser.firstName
+                ],
+
+                otherUser.id ?? "": [
+                    "name": otherUser.firstName
+                ]
+            ],
+
             "lastMessage": message.text,
             "updatedAt": message.timestamp
         ]
@@ -32,7 +46,6 @@ final class ChatService {
             .document(chatId)
             .setData(chatData, merge: true)
     }
-
     // MARK: - OBSERVE CHATS (HOME SCREEN)
     func observeChats(userId: String, completion: @escaping ([ChatModel]) -> Void) {
 

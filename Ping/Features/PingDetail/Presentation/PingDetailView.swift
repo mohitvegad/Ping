@@ -8,7 +8,9 @@ enum InputState {
 
 struct PingDetailView: View {
     
-    var userModel: UserModel?
+    let userModel: UserModel
+    let chatId: String
+
     var isOnline: Bool = false
     var imageURL: String? = nil
     
@@ -24,10 +26,14 @@ struct PingDetailView: View {
     // INITIALIZATION
     //---------------------------
     
-    init(chatId: String, userModel: UserModel) {
+    init(chatId: String, currentUser: UserModel, userModel: UserModel, repository: ChatRepositoryProtocol ) {
         self.userModel = userModel
+        self.chatId = chatId
+        
         _viewModel = StateObject(
-            wrappedValue: PingDetailViewModel(chatId: chatId, userModel: userModel, repository: ChatRepository(service: ChatService()))
+            wrappedValue: PingDetailViewModel(currentUser: currentUser, userModel: userModel, chatId: chatId,
+                repository: repository
+            )
         )
     }
     

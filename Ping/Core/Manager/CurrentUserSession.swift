@@ -9,6 +9,8 @@ final class CurrentUserSession {
     
     static let shared = CurrentUserSession()
 
+    var user: UserModel?
+
     private init() {}
 
     //---------------------------

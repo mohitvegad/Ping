@@ -7,6 +7,7 @@ final class PingDetailViewModel: ObservableObject {
 
     @Published var messages: [MessageModel] = []
 
+    let currentUser: UserModel
     let userModel: UserModel
     let chatId: String
     private let repository: ChatRepositoryProtocol
@@ -15,14 +16,14 @@ final class PingDetailViewModel: ObservableObject {
     // INITIALIZATION
     //---------------------------
     
-    init(chatId: String, userModel: UserModel, repository: ChatRepositoryProtocol) {
+    init(currentUser: UserModel, userModel: UserModel, chatId: String, repository: ChatRepositoryProtocol) {
+        self.currentUser = currentUser
         self.userModel = userModel
+        self.chatId = chatId
         self.repository = repository
-        self.chatId =  chatId
-        
+
         listenMessages()
     }
-
 }
 
 extension PingDetailViewModel {
@@ -41,13 +42,19 @@ extension PingDetailViewModel {
 extension PingDetailViewModel {
 
     func sendMessage(_ text: String) {
+
         let message = MessageModel(
             id: UUID().uuidString,
             text: text,
             timestamp: Date(),
-            senderId: CurrentUserSession.shared.id ?? ""
+            senderId: currentUser.id ?? ""
         )
 
-        repository.sendMessage(chatId: chatId, otherUserId: userModel.id ?? "", message: message)
+        repository.sendMessage(
+            chatId: chatId,
+            currentUser: currentUser,
+            otherUser: userModel,
+            message: message
+        )
     }
 }

@@ -13,15 +13,18 @@ struct PingApp: App {
 
     var body: some Scene {
         WindowGroup {
-            if appState.isReady {
-                RootTabView()
-                    .preferredColorScheme(.dark)
-            } else {
-                ProgressView("Loading...")
-                    .onAppear {
-                        appState.start()
-                    }
-            }
+            LoginView()
+
+//            if appState.isReady {
+////                RootTabView()
+//                LoginView()
+//                    .preferredColorScheme(.dark)
+//            } else {
+//                ProgressView("Loading...")
+//                    .onAppear {
+//                        appState.start()
+//                    }
+//            }
         }
     }
 }

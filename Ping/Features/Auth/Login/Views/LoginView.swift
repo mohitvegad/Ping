@@ -2,71 +2,80 @@ import SwiftUI
 
 struct LoginView: View {
 
-    @State private var name = ""
-    @State private var phoneNumber = ""
+    @StateObject private var viewModel: LoginViewModel
+
+    init() {
+        let service = FirebaseAuthService()
+        let repo = AuthRepository(authService: service)
+
+        _viewModel = StateObject(
+            wrappedValue: LoginViewModel(repository: repo)
+        )
+    }
 
     var body: some View {
 
-        VStack(spacing: 25) {
+        VStack(spacing: 20) {
 
-//            Spacer()
+            Spacer()
 
-            // Logo / Title
-            VStack(spacing: 10) {
+            Text("Login")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+                .foregroundColor(.white)
 
-                Image(systemName: "message.fill")
-                    .font(.system(size: 70))
-                    .foregroundColor(.blue)
+            // EMAIL
+            TextField("Email", text: $viewModel.email)
+                .keyboardType(.emailAddress)
+                .autocapitalization(.none)
+                .padding()
+                .background(Color.gray.opacity(0.2))
+                .cornerRadius(10)
+                .foregroundColor(.white)
+                .padding(.horizontal)
 
-                Text("Ping")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
+            // PASSWORD
+            SecureField("Password", text: $viewModel.password)
+                .padding()
+                .background(Color.gray.opacity(0.2))
+                .cornerRadius(10)
+                .foregroundColor(.white)
+                .padding(.horizontal)
 
-                Text("Login with your details")
-                    .foregroundColor(.gray)
+            // ERROR
+            if let error = viewModel.errorMessage {
+                Text(error)
+                    .foregroundColor(.red)
+                    .font(.caption)
             }
 
-            // Input Fields
-            VStack(spacing: 18) {
+            // BUTTON
+            Button {
 
-                TextField("Enter Name", text: $name)
-                    .padding()
-                    .background(Color(.systemGray6))
-                    .cornerRadius(12)
+                viewModel.login()
 
-                TextField("Enter Mobile Number", text: $phoneNumber)
-                    .keyboardType(.phonePad)
-                    .padding()
-                    .background(Color(.systemGray6))
-                    .cornerRadius(12)
+            } label: {
+
+                if viewModel.isLoading {
+                    ProgressView().tint(.white)
+                } else {
+                    Text("Login")
+                        .fontWeight(.bold)
+                        .frame(maxWidth: .infinity)
+                }
             }
+            .padding()
+            .background(Color.blue)
+            .foregroundColor(.white)
+            .cornerRadius(12)
             .padding(.horizontal)
-
-            // Login Button
-            Button(action: {
-
-                print("Name:", name)
-                print("Phone:", phoneNumber)
-
-                // Firebase login code here
-
-            }) {
-
-                Text("Continue")
-                    .fontWeight(.semibold)
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.blue)
-                    .cornerRadius(14)
-            }
-            .padding(.horizontal)
-            .disabled(name.isEmpty || phoneNumber.isEmpty)
-            .opacity(name.isEmpty || phoneNumber.isEmpty ? 0.6 : 1)
+            .disabled(viewModel.email.isEmpty ||
+                      viewModel.password.isEmpty ||
+                      viewModel.isLoading)
 
             Spacer()
         }
-        .padding()
+        .background(Color.black.ignoresSafeArea())
     }
 }
 
