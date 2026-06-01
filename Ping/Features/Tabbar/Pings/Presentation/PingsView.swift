@@ -16,7 +16,9 @@ struct PingsView: View {
 
                         NavigationLink {
 
-                            let currentUserId = CurrentUserSession.shared.id ?? ""
+//                            let currentUserId = CurrentUserSession.shared.id ?? ""
+                            let currentUserId = "CurrentUserSession.shared.id ?? "
+
 
                             let otherUserId = chat.otherUserId(currentUserId: currentUserId)
 
@@ -26,15 +28,15 @@ struct PingsView: View {
                                 lastName: ""
                             )
 
-                            if let currentUser = CurrentUserSession.shared.user {
-
-                                PingDetailView(
-                                    chatId: chat.id ?? "",
-                                    currentUser: currentUser,
-                                    userModel: user,
-                                    repository: ChatRepository(service: ChatService())
-                                )
-                            }
+//                            if let currentUser = CurrentUserSession.shared.user {
+//
+//                                PingDetailView(
+//                                    chatId: chat.id ?? "",
+//                                    currentUser: currentUser,
+//                                    userModel: user,
+//                                    repository: ChatRepository(service: ChatService())
+//                                )
+//                            }
 
                         } label: {
                             PingCell(model: chat.toPingCellModel())

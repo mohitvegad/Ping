@@ -1,29 +1,36 @@
 import SwiftUI
 
 struct LoginView: View {
-
+    
     @StateObject private var viewModel: LoginViewModel
-
-    init() {
+    var appState: AppState
+    
+    init(appState: AppState) {
+        
+        self.appState = appState
+        
         let service = FirebaseAuthService()
         let repo = AuthRepository(authService: service)
-
+        
         _viewModel = StateObject(
-            wrappedValue: LoginViewModel(repository: repo)
+            wrappedValue: LoginViewModel(
+                appState: appState,
+                repository: repo
+            )
         )
     }
-
+    
     var body: some View {
-
+        
         VStack(spacing: 20) {
-
+            
             Spacer()
-
+            
             Text("Login")
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .foregroundColor(.white)
-
+            
             // EMAIL
             TextField("Email", text: $viewModel.email)
                 .keyboardType(.emailAddress)
@@ -33,7 +40,7 @@ struct LoginView: View {
                 .cornerRadius(10)
                 .foregroundColor(.white)
                 .padding(.horizontal)
-
+            
             // PASSWORD
             SecureField("Password", text: $viewModel.password)
                 .padding()
@@ -41,33 +48,33 @@ struct LoginView: View {
                 .cornerRadius(10)
                 .foregroundColor(.white)
                 .padding(.horizontal)
-
+            
             // MARK: - STATE UI
-
+            
             switch viewModel.state {
-
+                
             case .idle:
                 EmptyView()
-
+                
             case .loading:
                 ProgressView()
                     .tint(.white)
-
-            case .success:
+                
+            case .success(let uid):
                 Text("Login Success")
                     .foregroundColor(.green)
-
+                
             case .error(let message):
                 Text(message)
                     .foregroundColor(.red)
                     .font(.caption)
             }
-
+            
             // BUTTON
             Button {
                 viewModel.login()
             } label: {
-
+                
                 Text("Login")
                     .fontWeight(.bold)
                     .frame(maxWidth: .infinity)
@@ -80,13 +87,13 @@ struct LoginView: View {
             .disabled(viewModel.state == .loading ||
                       viewModel.email.isEmpty ||
                       viewModel.password.isEmpty)
-
+            
             Spacer()
         }
         .background(Color.black.ignoresSafeArea())
     }
 }
 
-#Preview {  
-    LoginView()
+#Preview {
+    //    LoginView()
 }

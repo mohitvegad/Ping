@@ -5,7 +5,7 @@ protocol AuthRepositoryProtocol {
     func login(
         email: String,
         password: String,
-        completion: @escaping (Result<Void, Error>) -> Void
+        completion: @escaping (Result<String, Error>) -> Void
     )
 
     func signUp(

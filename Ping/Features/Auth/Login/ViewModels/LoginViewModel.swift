@@ -2,10 +2,9 @@ import Foundation
 import Combine
 
 enum LoginViewState: Equatable {
-
     case idle
     case loading
-    case success
+    case success(String)
     case error(String)
 }
 
@@ -18,10 +17,13 @@ final class LoginViewModel: ObservableObject {
     @Published var password = ""
 
     @Published var state: LoginViewState = .idle
+    private let appState: AppState
 
     private let repository: AuthRepositoryProtocol
 
-    init(repository: AuthRepositoryProtocol) {
+    init(appState: AppState, repository: AuthRepositoryProtocol) {
+        self.appState = appState
+
         self.repository = repository
     }
 
@@ -45,13 +47,11 @@ final class LoginViewModel: ObservableObject {
 
                 switch result {
 
-                case .success:
-
-                    self.state = .success
-                    print("LOGIN SUCCESS → navigate")
+                case .success(let uid):
+                    self.appState.loginSuccess(uid: uid)
+                    self.state = .success(uid)
 
                 case .failure(let error):
-
                     self.state = .error(error.localizedDescription)
                 }
             }

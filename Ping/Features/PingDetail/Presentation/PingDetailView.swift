@@ -130,7 +130,8 @@ private extension PingDetailView {
             VStack(spacing: 12) {
                 
                 ForEach(viewModel.messages) { message in
-                    let isMe = message.senderId == CurrentUserSession.shared.id ?? "unknown"
+                    let isMe = true
+//                    let isMe = message.senderId == CurrentUserSession.shared.id ?? "unknown"
                     
                     HStack {
                         Text(message.text)

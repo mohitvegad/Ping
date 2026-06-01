@@ -1,23 +1,41 @@
 import Foundation
 import Combine
-import FirebaseAuth
+
 
 @MainActor
 final class AppState: ObservableObject {
 
-    @Published var isReady = false
+    enum State {
+        case loading
+        case loggedIn(String)
+        case loggedOut
+    }
+
+    @Published var state: State = .loading
+
+    private let keychain = KeychainManager.shared
 
     func start() {
 
-        AuthManager.shared.loginAsGuest { [weak self] success in
-            guard let self else { return }
+        if let uid = keychain.get("userId") {
+            print("UID FOUND:", uid)
+            CurrentUserSession.shared.userId = uid
+            state = .loggedIn(uid)
 
-            guard success else {
-                print("Auth failed → stop app")
-                return
-            }
-            self.isReady = true
-
+        } else {
+            state = .loggedOut
         }
+    }
+
+    func loginSuccess(uid: String) {
+        keychain.save(uid, key: "userId")
+        CurrentUserSession.shared.userId = uid
+        state = .loggedIn(uid)
+    }
+
+    func logout() {
+        keychain.delete("userId")
+        CurrentUserSession.shared.userId = nil
+        state = .loggedOut
     }
 }

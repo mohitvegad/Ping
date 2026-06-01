@@ -10,7 +10,7 @@ final class AuthRepository: AuthRepositoryProtocol {
 
     // MARK: - LOGIN
 
-    func login(email: String, password: String, completion: @escaping (Result<Void, Error>) -> Void) {
+    func login(email: String, password: String, completion: @escaping (Result<String, Error>) -> Void) {
 
         authService.login(email: email, password: password) { result in
 
@@ -20,7 +20,7 @@ final class AuthRepository: AuthRepositoryProtocol {
 
                 print("LOGIN SUCCESS:", uid)
 
-                completion(.success(()))
+                completion(.success(uid))
 
             case .failure(let error):
 
