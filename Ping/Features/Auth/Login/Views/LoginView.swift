@@ -6,18 +6,11 @@ struct LoginView: View {
     var appState: AppState
     
     init(appState: AppState) {
-        
         self.appState = appState
-        
         let service = FirebaseAuthService()
         let repo = AuthRepository(authService: service)
         
-        _viewModel = StateObject(
-            wrappedValue: LoginViewModel(
-                appState: appState,
-                repository: repo
-            )
-        )
+        _viewModel = StateObject(wrappedValue: LoginViewModel(appState: appState,repository: repo))
     }
     
     var body: some View {

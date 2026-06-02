@@ -26,10 +26,7 @@ final class FirebaseAuthService: AuthServiceProtocol {
         }
     }
 
-    func getCurrentUser(
-        uid: String,
-        completion: @escaping (Result<UserModel, Error>) -> Void
-    ) {
+    func getCurrentUser(uid: String,completion: @escaping (Result<UserModel, Error>) -> Void) {
         db.collection("users")
             .document(uid)
             .getDocument { snapshot, error in

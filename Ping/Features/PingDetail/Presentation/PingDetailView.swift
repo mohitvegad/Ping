@@ -8,7 +8,7 @@ struct PingDetailView: View {
 
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: PingDetailViewModel
-    @State private var inputText: String = ""
+    @State var inputText: String = ""
 
     // MARK: - INIT
     init(

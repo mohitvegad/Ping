@@ -51,7 +51,6 @@ final class LoginViewModel: ObservableObject {
                     switch result {
 
                     case .success(let user):
-
                         DispatchQueue.main.async {
                             CurrentUserSession.shared.setUser(user)
                             self.appState.loginSuccess(uid: uid)
