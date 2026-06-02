@@ -2,8 +2,11 @@ import SwiftUI
 
 struct RootTabView: View {
     
-    init() {
-        
+    private let currentUserId: String
+
+    init(currentUserId: String) {
+        self.currentUserId = currentUserId
+
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = UIColor(Color.black)
@@ -21,7 +24,7 @@ struct RootTabView: View {
             TabView {
                 // PING VIEW TAB
                 NavigationStack {
-                    PingsView()
+                    PingsView(currentUserId: currentUserId)
                 }
                 .tabItem {
                     Label("Pings", systemImage: "message.fill")
@@ -39,8 +42,4 @@ struct RootTabView: View {
             
         }
     }
-}
-
-#Preview {
-    RootTabView()
 }

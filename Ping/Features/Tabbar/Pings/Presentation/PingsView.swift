@@ -2,12 +2,28 @@ import SwiftUI
 
 struct PingsView: View {
 
-    @StateObject var viewModel = PingsViewViewModel()
+    @StateObject private var viewModel: PingsViewViewModel
 
     @State private var path = NavigationPath()
     @State private var showAddUsersView = false
 
     var currentUserId: String
+
+    //---------------------------
+    // INIT
+    //---------------------------
+
+    init(currentUserId: String) {
+
+        let service = ChatService()
+        let repository = ChatRepository(service: service)
+
+        _viewModel = StateObject(
+            wrappedValue: PingsViewViewModel(repository: repository)
+        )
+
+        self.currentUserId = currentUserId
+    }
 
     var body: some View {
 
@@ -24,12 +40,8 @@ struct PingsView: View {
                             if let currentUser = CurrentUserSession.shared.user {
 
                                 let otherUserId = chat.otherUserId(currentUserId: currentUserId)
-
-//                                PingDetailView(
-//                                    chatId: chat.id ?? "",
-//                                    currentUser: currentUser,
-//                                    userModel: user
-//                                )
+                                // NEXT STEP (CHAT DETAIL)
+                                // PingDetailView(...)
                             }
 
                         } label: {
@@ -61,7 +73,7 @@ struct PingsView: View {
             }
 
             .onAppear {
-                viewModel.loadChats()
+                viewModel.loadChats(uid: currentUserId)
             }
         }
     }

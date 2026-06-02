@@ -14,8 +14,8 @@ struct RootView: View {
         case .loggedOut:
             LoginView(appState: appState) 
 
-        case .loggedIn:
-            RootTabView()
+        case .loggedIn(let uid):
+            RootTabView(currentUserId: uid)
         }
     }
 }

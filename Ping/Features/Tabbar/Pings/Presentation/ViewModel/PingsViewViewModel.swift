@@ -5,20 +5,25 @@ final class PingsViewViewModel: ObservableObject {
 
     @Published var chats: [ChatModel] = []
 
-    private let service = ChatService()
+    private let repository: ChatRepositoryProtocol
+
+    init(repository: ChatRepositoryProtocol) {
+        self.repository = repository
+    }
 
     //---------------------------
     // FUNCTION
     //---------------------------
 
-    func loadChats() {
+    func loadChats(uid: String) {
 
-//        guard let userId = CurrentUserSession.shared.id else { return }
-//
-//        service.observeChats(userId: userId) { [weak self] chats in
-//            DispatchQueue.main.async {
-//                self?.chats = chats
-//            }
-//        }
+        repository.getChats(uid: uid) { [weak self] chats in
+
+            DispatchQueue.main.async {
+                self?.chats = chats.sorted {
+                    $0.updatedAt > $1.updatedAt
+                }
+            }
+        }
     }
 }
