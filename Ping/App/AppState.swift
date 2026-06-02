@@ -16,7 +16,6 @@ final class AppState: ObservableObject {
     private let keychain = KeychainManager.shared
 
     func start() {
-
         if let uid = keychain.get("userId") {
             print("UID FOUND:", uid)
             CurrentUserSession.shared.setUserId(uid)

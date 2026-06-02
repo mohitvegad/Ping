@@ -1,63 +1,58 @@
 import SwiftUI
-import FirebaseAuth
-
-enum InputState {
-    case idle
-    case typing
-}
 
 struct PingDetailView: View {
-    
-    let userModel: UserModel
-    let chatId: String
 
-    var isOnline: Bool = false
-    var imageURL: String? = nil
-    
+    let chatId: String
+    let currentUser: UserModel
+    let userModel: UserModel
+
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: PingDetailViewModel
     @State private var inputText: String = ""
-    
-    var inputState: InputState {
-        inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? .idle : .typing
-    }
-    
-    //---------------------------
-    // INITIALIZATION
-    //---------------------------
-    
-    init(chatId: String, currentUser: UserModel, userModel: UserModel, repository: ChatRepositoryProtocol ) {
-        self.userModel = userModel
+
+    // MARK: - INIT
+    init(
+        chatId: String,
+        currentUser: UserModel,
+        userModel: UserModel,
+        repository: ChatRepositoryProtocol
+    ) {
         self.chatId = chatId
-        
+        self.currentUser = currentUser
+        self.userModel = userModel
+
         _viewModel = StateObject(
-            wrappedValue: PingDetailViewModel(currentUser: currentUser, userModel: userModel, chatId: chatId,
+            wrappedValue: PingDetailViewModel(
+                currentUser: currentUser,
+                userModel: userModel,
+                chatId: chatId,
                 repository: repository
             )
         )
     }
-    
+
+    // MARK: - BODY
     var body: some View {
         VStack(spacing: 0) {
-            
+
             headerView
-            
+
             messagesView
-            
+
             inputView
-            
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.black)
-        .toolbar(.hidden, for: .tabBar)
+        .navigationBarBackButtonHidden(true)
     }
 }
+
+// MARK: - HEADER
 private extension PingDetailView {
-    
+
     var headerView: some View {
         HStack(spacing: 12) {
-            
-            // MARK: Back Button
+
             Button {
                 dismiss()
             } label: {
@@ -65,84 +60,65 @@ private extension PingDetailView {
                     .font(.system(size: 18, weight: .semibold))
                     .foregroundStyle(.white)
             }
-            
-            // MARK: Profile Image
+
             Image(systemName: "person.fill")
                 .font(.system(size: 28))
                 .foregroundStyle(.white)
                 .frame(width: 40, height: 40)
-                .background(.brown)
+                .background(Color.gray)
                 .clipShape(Circle())
-            
-            // MARK: Name + Status
+
             VStack(alignment: .leading, spacing: 2) {
-                
-                Text("")
+
+                Text("\(userModel.firstName) \(userModel.lastName)")
                     .font(.headline)
                     .foregroundStyle(.white)
-                
-                Text(isOnline ? "Online" : "Last seen recently")
+
+                Text("Online")
                     .font(.caption)
-                    .foregroundStyle(isOnline ? .green : .gray)
+                    .foregroundStyle(.green)
             }
-            
+
             Spacer()
-            
-            // MARK: Actions
-            HStack(spacing: 18) {
-                
-                Button {
-                    // voice call
-                } label: {
-                    Image(systemName: "phone")
-                        .foregroundStyle(.white)
-                }
-                
-                Button {
-                    // video call
-                } label: {
-                    Image(systemName: "video")
-                        .foregroundStyle(.white)
-                }
-                
-                Button {
-                    // info
-                } label: {
-                    Image(systemName: "info.circle")
-                        .foregroundStyle(.white)
-                }
-            }
         }
         .padding(.horizontal)
         .padding(.vertical, 10)
         .background(Color.black.opacity(0.95))
-        .toolbar(.hidden, for: .navigationBar)
-        
     }
 }
 
+// MARK: - MESSAGES
 private extension PingDetailView {
-    
+
     var messagesView: some View {
-        
+
         ScrollView {
-            
+
             VStack(spacing: 12) {
-                
+
                 ForEach(viewModel.messages) { message in
-                    let isMe = true
-//                    let isMe = message.senderId == CurrentUserSession.shared.id ?? "unknown"
-                    
+
+                    let isMe = message.senderId == currentUser.id
+
                     HStack {
+
+                        if isMe { Spacer() }
+
                         Text(message.text)
                             .padding(10)
-                            .background(Color.gray.opacity(0.3))
+                            .background(
+                                isMe
+                                ? Color.blue
+                                : Color.gray.opacity(0.3)
+                            )
                             .foregroundStyle(.white)
-                            .cornerRadius(10)
-                            .frame(maxWidth: 280, alignment: isMe ? .trailing : .leading)
+                            .cornerRadius(12)
+                            .frame(maxWidth: 250,
+                                   alignment: isMe ? .trailing : .leading)
+
+                        if !isMe { Spacer() }
                     }
                     .padding(.horizontal)
-                    .frame(maxWidth: .infinity, alignment: isMe ? .trailing : .leading)
                 }
             }
             .padding(.top, 10)
@@ -150,71 +126,43 @@ private extension PingDetailView {
     }
 }
 
+// MARK: - INPUT
 private extension PingDetailView {
-    
+
     var inputView: some View {
-        
+
         HStack(spacing: 12) {
-            
-            Button {
-                
-            } label: {
-                Image(systemName: "plus")
-                    .font(.system(size: 24))
-                    .foregroundStyle(.white)
-            }
-            
+
             TextField("Type a message...", text: $inputText)
                 .padding(10)
                 .background(Color.gray.opacity(0.2))
-                .clipShape(.capsule)
+                .clipShape(Capsule())
                 .foregroundStyle(.white)
-            
-            switch inputState {
-                
-            case .idle:
-                Button {
-                    // camera action
-                } label: {
-                    Image(systemName: "camera")
-                        .font(.system(size: 24))
-                        .foregroundStyle(.white)
-                }
-                
-                Button {
-                    // mic action
-                } label: {
-                    Image(systemName: "mic")
-                        .font(.system(size: 24))
-                        .foregroundStyle(.white)
-                }
-                
-            case .typing:
-                Button {
-                    sendMessage()
-                } label: {
-                    Image(systemName: "paperplane.fill")
-                        .font(.system(size: 24))
-                        .foregroundStyle(.white)
-                }
+
+            Button {
+                sendMessage()
+            } label: {
+                Image(systemName: "paperplane.fill")
+                    .font(.system(size: 20))
+                    .foregroundStyle(.white)
             }
+            .disabled(inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
         }
         .padding()
         .background(Color.black)
-        
     }
 }
 
+// MARK: - ACTION
 private extension PingDetailView {
-    
+
     func sendMessage() {
-        guard !inputText.isEmpty else { return }
-        viewModel.sendMessage(inputText)
+
+        let text = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty else { return }
+
+        viewModel.sendMessage(text)
+
         inputText = ""
     }
 }
-
-#Preview {
-//    PingDetailView()
-}
-

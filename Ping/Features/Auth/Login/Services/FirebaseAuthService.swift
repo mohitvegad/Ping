@@ -1,7 +1,10 @@
 import FirebaseAuth
+import FirebaseFirestore
 
 
 final class FirebaseAuthService: AuthServiceProtocol {
+    
+    private let db = Firestore.firestore()
 
     // MARK: - LOGIN
 
@@ -23,6 +26,32 @@ final class FirebaseAuthService: AuthServiceProtocol {
         }
     }
 
+    func getCurrentUser(
+        uid: String,
+        completion: @escaping (Result<UserModel, Error>) -> Void
+    ) {
+        db.collection("users")
+            .document(uid)
+            .getDocument { snapshot, error in
+
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+
+                guard let snapshot = snapshot else {
+                    completion(.failure(NSError(domain: "Firestore", code: -1)))
+                    return
+                }
+
+                do {
+                    let user = try snapshot.data(as: UserModel.self)
+                    completion(.success(user))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+    }
     // MARK: - SIGN UP
 
     func signUp(email: String, password: String, completion: @escaping (Result<String, Error>) -> Void) {

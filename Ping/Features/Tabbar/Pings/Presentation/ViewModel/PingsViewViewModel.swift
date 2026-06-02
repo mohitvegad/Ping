@@ -14,6 +14,10 @@ final class PingsViewViewModel: ObservableObject {
     //---------------------------
     // FUNCTION
     //---------------------------
+    
+    func createChat(currentUserId: String, otherUserId: String, completion: @escaping (String) -> Void) {
+        repository.createChat(currentUserId: currentUserId,otherUserId: otherUserId,completion: completion)
+    }
 
     func loadChats(uid: String) {
 
@@ -27,3 +31,4 @@ final class PingsViewViewModel: ObservableObject {
         }
     }
 }
+

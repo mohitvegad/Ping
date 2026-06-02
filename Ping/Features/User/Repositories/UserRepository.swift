@@ -8,10 +8,6 @@ final class UserRepository: UserRepositoryProtocol {
         self.service = service
     }
 
-    func getCurrentUser(uid: String, completion: @escaping (UserModel?) -> Void) {
-        service.fetchCurrentUser(uid: uid, completion: completion)
-    }
-
     func getUsers(uid: String, completion: @escaping ([UserModel]) -> Void) {
         service.fetchUsers(uid: uid) { users in
 

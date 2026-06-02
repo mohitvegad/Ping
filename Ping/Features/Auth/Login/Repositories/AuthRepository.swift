@@ -29,6 +29,12 @@ final class AuthRepository: AuthRepositoryProtocol {
         }
     }
 
+    // MARK: - FETCH CURRENT USER
+    
+    func getCurrentUser(uid: String, completion: @escaping (Result<UserModel, Error>) -> Void) {
+        authService.getCurrentUser(uid: uid, completion: completion)
+    }
+    
     // MARK: - SIGN UP
 
     func signUp(email: String, password: String, completion: @escaping (Result<Void, Error>) -> Void) {
