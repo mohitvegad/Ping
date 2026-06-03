@@ -14,17 +14,34 @@ final class AppState: ObservableObject {
     @Published var state: State = .idle
 
     private let keychain = KeychainManager.shared
+    private let repository: AuthRepositoryProtocol
+
+    // MARK: - INIT
+    init(repository: AuthRepositoryProtocol) {
+        self.repository = repository
+    }
+
 
     func start() {
-        if let uid = keychain.get("userId") {
-            print("UID FOUND:", uid)
-            CurrentUserSession.shared.setUserId(uid)
-            state = .loggedIn(uid)
 
-        } else {
-            state = .loggedOut
-        }
-    }
+           guard let uid = keychain.get("userId") else {
+               state = .loggedOut
+               return
+           }
+
+           repository.getCurrentUser(uid: uid) { [weak self] result in
+               guard let self else { return }
+               DispatchQueue.main.async {
+                   switch result {
+                   case .success(let user):
+                       CurrentUserSession.shared.setUser(user)
+                       self.state = .loggedIn(uid)
+                   case .failure:
+                       self.logout()
+                   }
+               }
+           }
+       }
 
     func loginSuccess(uid: String) {
         keychain.save(uid, key: "userId")

@@ -8,8 +8,6 @@ enum LoginViewState: Equatable {
     case error(String)
 }
 
-import Foundation
-
 @MainActor
 final class LoginViewModel: ObservableObject {
     
@@ -52,7 +50,6 @@ final class LoginViewModel: ObservableObject {
 
                     case .success(let user):
                         DispatchQueue.main.async {
-                            CurrentUserSession.shared.setUser(user)
                             self.appState.loginSuccess(uid: uid)
                             self.state = .success(uid)
                         }

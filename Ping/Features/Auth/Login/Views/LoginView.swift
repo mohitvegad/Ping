@@ -3,6 +3,7 @@ import SwiftUI
 struct LoginView: View {
     
     @StateObject private var viewModel: LoginViewModel
+    
     var appState: AppState
     
     init(appState: AppState) {
@@ -10,7 +11,7 @@ struct LoginView: View {
         let service = FirebaseAuthService()
         let repo = AuthRepository(authService: service)
         
-        _viewModel = StateObject(wrappedValue: LoginViewModel(appState: appState,repository: repo))
+        _viewModel = StateObject(wrappedValue: LoginViewModel(appState: appState, repository: repo))
     }
     
     var body: some View {
@@ -53,7 +54,7 @@ struct LoginView: View {
                 ProgressView()
                     .tint(.white)
                 
-            case .success(let uid):
+            case .success(_):
                 Text("Login Success")
                     .foregroundColor(.green)
                 
