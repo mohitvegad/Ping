@@ -8,7 +8,7 @@ final class PingDetailViewModel: ObservableObject {
     @Published var messages: [MessageModel] = []
 
     let currentUser: UserModel
-    let userModel: UserModel
+    let otherUser: UserModel
     let chatId: String
     private let repository: ChatRepositoryProtocol
     
@@ -16,9 +16,9 @@ final class PingDetailViewModel: ObservableObject {
     // INITIALIZATION
     //---------------------------
     
-    init(currentUser: UserModel, userModel: UserModel, chatId: String, repository: ChatRepositoryProtocol) {
+    init(currentUser: UserModel, otherUser: UserModel, chatId: String, repository: ChatRepositoryProtocol) {
         self.currentUser = currentUser
-        self.userModel = userModel
+        self.otherUser = otherUser
         self.chatId = chatId
         self.repository = repository
 

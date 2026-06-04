@@ -1,7 +1,6 @@
 import Foundation
 import Combine
 
-
 @MainActor
 final class AppState: ObservableObject {
 
@@ -20,7 +19,6 @@ final class AppState: ObservableObject {
     init(repository: AuthRepositoryProtocol) {
         self.repository = repository
     }
-
 
     func start() {
 

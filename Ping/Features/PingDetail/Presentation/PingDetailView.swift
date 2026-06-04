@@ -4,31 +4,23 @@ struct PingDetailView: View {
 
     let chatId: String
     let currentUser: UserModel
-    let userModel: UserModel
+    let otherUser: UserModel
 
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: PingDetailViewModel
     @State var inputText: String = ""
 
-    // MARK: - INIT
-    init(
-        chatId: String,
-        currentUser: UserModel,
-        userModel: UserModel,
-        repository: ChatRepositoryProtocol
-    ) {
+    //---------------------------
+    // INITIALIZATION
+    //---------------------------
+    
+    init(chatId: String, currentUser: UserModel, otherUser: UserModel, repository: ChatRepositoryProtocol) {
         self.chatId = chatId
         self.currentUser = currentUser
-        self.userModel = userModel
+        self.otherUser = otherUser
 
-        _viewModel = StateObject(
-            wrappedValue: PingDetailViewModel(
-                currentUser: currentUser,
-                userModel: userModel,
-                chatId: chatId,
-                repository: repository
-            )
-        )
+        _viewModel = StateObject(wrappedValue: PingDetailViewModel(currentUser: currentUser, otherUser: otherUser,
+                chatId: chatId,repository: repository))
     }
 
     // MARK: - BODY
@@ -70,7 +62,7 @@ private extension PingDetailView {
 
             VStack(alignment: .leading, spacing: 2) {
 
-                Text("\(userModel.firstName) \(userModel.lastName)")
+                Text("\(otherUser.firstName) \(otherUser.lastName)")
                     .font(.headline)
                     .foregroundStyle(.white)
 
@@ -84,6 +76,7 @@ private extension PingDetailView {
         .padding(.horizontal)
         .padding(.vertical, 10)
         .background(Color.black.opacity(0.95))
+        .toolbar(.hidden, for: .tabBar)
     }
 }
 

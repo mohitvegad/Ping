@@ -2,123 +2,48 @@ import SwiftUI
 
 struct PingsView: View {
 
-    @StateObject private var viewModel: PingsViewViewModel
+    // MARK: - Properties
     @State private var path = NavigationPath()
     @State private var showAddUsersView = false
 
-    var currentUserId: String
+    let currentUserId: String
 
-    // MARK: - INIT
-    init(currentUserId: String) {
-
-        let service = ChatService()
-        let repository = ChatRepository(service: service)
-
-        _viewModel = StateObject(
-            wrappedValue: PingsViewViewModel(repository: repository)
-        )
-
-        self.currentUserId = currentUserId
-    }
-
-    // MARK: - BODY
+    // MARK: - Body
     var body: some View {
-
         NavigationStack(path: $path) {
+            VStack {
+                Text("Pings")
+                    .foregroundStyle(.white)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.black)
 
-            ScrollView {
-
-                VStack(spacing: 0) {
-
-                    ForEach(viewModel.chats) { chat in
-
-                        NavigationLink {
-                            openChat(chat: chat)
-                        } label: {
-                            PingCell(model: chat.toPingCellModel())
-                        }
-                        .buttonStyle(.plain)
-                    }
+            // MARK: - NAVIGATION
+            .navigationDestination(for: UserModel.self) { otherUser in
+                if let currentUser = CurrentUserSession.shared.user {
+                    PingDetailView(chatId: "", currentUser: currentUser, otherUser: otherUser, repository: ChatRepository(
+                        service: ChatService()))
                 }
             }
-            .background(Color.black)
-            .navigationTitle("Pings")
-            .navigationBarTitleDisplayMode(.inline)
 
-            // MARK: - NAVIGATION DESTINATION (for new chats)
-            .navigationDestination(for: String.self) { chatId in
-                openChatById(chatId: chatId)
-            }
-
+            // MARK: - Toolbar
             .toolbar {
-                ToolbarItemGroup(placement: .topBarTrailing) {
+                ToolbarItem(placement: .topBarTrailing) {
                     ToolbarIconButton(icon: "plus.circle.fill") {
                         showAddUsersView = true
                     }
                 }
             }
 
-            // MARK: - SELECT USER FLOW
+            // MARK: - Users Sheet
             .sheet(isPresented: $showAddUsersView) {
                 NavigationStack {
-                    UsersView(currentUserId: currentUserId) { user in
-
+                    UsersView(currentUserId: currentUserId) { selectedUser in
                         showAddUsersView = false
-
-                        viewModel.createChat(
-                            currentUserId: currentUserId,
-                            otherUserId: user.id ?? ""
-                        ) { chatId in
-
-                            path.append(chatId)
-                        }
+                        path.append(selectedUser)
                     }
                 }
             }
-
-            .onAppear {
-                viewModel.loadChats(uid: currentUserId)
-            }
         }
-    }
-}
-
-private extension PingsView {
-
-    func openChat(chat: ChatModel) -> some View {
-
-        let currentUser = CurrentUserSession.shared.user!
-
-        let otherUserId = chat.otherUserId(currentUserId: currentUserId)
-
-        let otherUser = UserModel(
-            id: otherUserId,
-            firstName: "",
-            lastName: ""
-        )
-
-        return PingDetailView(
-            chatId: chat.id ?? "",
-            currentUser: currentUser,
-            userModel: otherUser,
-            repository: ChatRepository(service: ChatService())
-        )
-    }
-
-    // NavigationPath chatId flow
-    func openChatById(chatId: String) -> some View {
-
-        let currentUser = CurrentUserSession.shared.user!
-
-        let otherUserId = chatId.components(separatedBy: "_")
-            .first { $0 != currentUser.id } ?? ""
-
-        let otherUser = UserModel(
-            id: otherUserId,
-            firstName: "",
-            lastName: ""
-        )
-
-        return PingDetailView(chatId: chatId,currentUser: currentUser,userModel: otherUser, repository: ChatRepository(service: ChatService()))
     }
 }
