@@ -5,7 +5,6 @@ final class UserService: UserServiceProtocol {
     
     private let db = Firestore.firestore()
 
-        
     func fetchUsers(uid: String, completion: @escaping ([UserModel]) -> Void) {
         
         db.collection("users")

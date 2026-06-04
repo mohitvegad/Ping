@@ -26,12 +26,13 @@ struct PingsView: View {
     
     var body: some View {
         NavigationStack(path: $path) {
-            VStack {
-                Text("Pings")
-                    .foregroundStyle(.white)
+            ScrollView {
+                VStack(spacing: 0) {
+                    ForEach(viewModel.chats) { chat in
+                        PingCell(model: chat.toPingCellModel())
+                    }
+                }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.black)
             
             // MARK: - NAVIGATION
             .navigationDestination(for: UserModel.self) { otherUser in

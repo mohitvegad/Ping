@@ -11,8 +11,6 @@ struct ChatModel: Identifiable, Codable, Hashable {
     @DocumentID var id: String?
 
     let participants: [String]
-    let participantInfo: [String: ParticipantInfo]
-
     let lastMessage: String
     let updatedAt: Date
     
