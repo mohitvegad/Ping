@@ -7,12 +7,13 @@ final class ChatRepository: ChatRepositoryProtocol {
     init(service: ChatServiceProtocol) {
         self.service = service
     }
+    
+    func sendMessage(text: String, currentUser: UserModel, otherUser: UserModel, completion: @escaping (Result<Void, Error>) -> Void) {
+        service.sendMessage(text: text, currentUser: currentUser, otherUser: otherUser, completion: completion)
+    }
 
-    func getChats(uid: String, completion: @escaping ([ChatModel]) -> Void) {
+    func fetchChats(uid: String, completion: @escaping ([ChatModel]) -> Void) {
         service.fetchChats(uid: uid, completion: completion)
     }
     
-    func createChat(currentUserId: String, otherUserId: String,completion: @escaping (String) -> Void) {
-        service.createChat(currentUserId: currentUserId, otherUserId: otherUserId,completion: completion)
-    }
 }

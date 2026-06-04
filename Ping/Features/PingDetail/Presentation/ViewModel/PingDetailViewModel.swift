@@ -9,17 +9,15 @@ final class PingDetailViewModel: ObservableObject {
 
     let currentUser: UserModel
     let otherUser: UserModel
-    let chatId: String
     private let repository: ChatRepositoryProtocol
     
     //---------------------------
     // INITIALIZATION
     //---------------------------
     
-    init(currentUser: UserModel, otherUser: UserModel, chatId: String, repository: ChatRepositoryProtocol) {
+    init(currentUser: UserModel, otherUser: UserModel, repository: ChatRepositoryProtocol) {
         self.currentUser = currentUser
         self.otherUser = otherUser
-        self.chatId = chatId
         self.repository = repository
 
         listenMessages()
@@ -38,23 +36,17 @@ extension PingDetailViewModel {
     }
 }
 
-
 extension PingDetailViewModel {
-
+    
     func sendMessage(_ text: String) {
 
-        let message = MessageModel(
-            id: UUID().uuidString,
-            text: text,
-            timestamp: Date(),
-            senderId: currentUser.id ?? ""
-        )
-
-//        repository.sendMessage(
-//            chatId: chatId,
-//            currentUser: currentUser,
-//            otherUser: userModel,
-//            message: message
-//        )
+        repository.sendMessage(text: text, currentUser: currentUser, otherUser: otherUser) { result in
+            switch result {
+            case .success:
+                print("Message sent")
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
     }
 }

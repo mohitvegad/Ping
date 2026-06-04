@@ -1,48 +1,80 @@
 import FirebaseFirestore
 
-
 final class ChatService: ChatServiceProtocol {
 
     private let db = Firestore.firestore()
     
-    func createChat(currentUserId: String, otherUserId: String,completion: @escaping (String) -> Void) {
+    func sendMessage(text: String, currentUser: UserModel, otherUser: UserModel, completion: @escaping (Result<Void, Error>) -> Void) {
 
-        let chatId = [currentUserId, otherUserId].sorted().joined(separator: "_")
+        let chatId = [currentUser.id ?? "" , otherUser.id ?? ""]
+            .sorted()
+            .joined(separator: "_")
 
-        let data: [String: Any] = [
-            "participants": [currentUserId, otherUserId],
-            "chatId": chatId,
-            "lastMessage": "",
-            "updatedAt": Date()
-        ]
+        let chatRef = db.collection("chats").document(chatId)
 
-        Firestore.firestore()
-            .collection("chats")
-            .document(chatId)
-            .setData(data, merge: true) { error in
+        chatRef.getDocument { snapshot, error in
 
-                if let error = error {
-                    print(error.localizedDescription)
-                    return
-                }
+            if snapshot?.exists == false {
 
-                completion(chatId)
+                // CREATE CHAT ONLY ONCE
+                let chatData: [String: Any] = [
+                    "id": chatId,
+                    "participants": [currentUser.id ?? "", otherUser.id ?? ""],
+                    "updatedAt": Date()
+                ]
+
+                chatRef.setData(chatData)
             }
+
+            // NOW SEND MESSAGE (always)
+
+            let messageRef = chatRef.collection("messages").document()
+
+            let message = MessageModel(
+                id: messageRef.documentID,
+                text: text,
+                timestamp: Date(),
+                senderId: currentUser.id ?? ""
+            )
+
+            do {
+
+                try messageRef.setData(from: message)
+
+                completion(.success(()))
+
+            } catch {
+
+                completion(.failure(error))
+            }
+        }
     }
-
+    
     func fetchChats(uid: String, completion: @escaping ([ChatModel]) -> Void) {
-
+        print("ERROR:", uid)
         db.collection("chats")
             .whereField("participants", arrayContains: uid)
             .addSnapshotListener { snapshot, error in
+
+                if let error {
+                    print("ERROR:", error)
+                    completion([])
+                    return
+                }
 
                 guard let documents = snapshot?.documents else {
                     completion([])
                     return
                 }
 
-                let chats: [ChatModel] = documents.compactMap {
-                    try? $0.data(as: ChatModel.self)
+                let chats: [ChatModel] = documents.compactMap { doc in
+
+                    do {
+                        return try doc.data(as: ChatModel.self)
+                    } catch {
+                        print("DECODE ERROR:", error)
+                        return nil
+                    }
                 }
 
                 completion(chats)

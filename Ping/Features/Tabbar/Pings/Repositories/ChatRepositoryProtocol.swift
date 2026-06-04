@@ -1,6 +1,6 @@
 import Foundation
 
 protocol ChatRepositoryProtocol {
-    func createChat(currentUserId: String, otherUserId: String, completion: @escaping (String) -> Void)
-    func getChats(uid: String, completion: @escaping ([ChatModel]) -> Void)
+    func sendMessage(text: String, currentUser: UserModel, otherUser: UserModel, completion: @escaping (Result<Void, Error>) -> Void)
+    func fetchChats(uid: String, completion: @escaping ([ChatModel]) -> Void)
 }

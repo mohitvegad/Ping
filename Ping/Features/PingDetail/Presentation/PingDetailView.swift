@@ -2,7 +2,6 @@ import SwiftUI
 
 struct PingDetailView: View {
     
-    let chatId: String
     let currentUser: UserModel
     let otherUser: UserModel
     
@@ -18,13 +17,11 @@ struct PingDetailView: View {
     // INITIALIZATION
     //---------------------------
     
-    init(chatId: String, currentUser: UserModel, otherUser: UserModel, repository: ChatRepositoryProtocol) {
-        self.chatId = chatId
+    init(currentUser: UserModel, otherUser: UserModel, repository: ChatRepositoryProtocol) {
         self.currentUser = currentUser
         self.otherUser = otherUser
         
-        _viewModel = StateObject(wrappedValue: PingDetailViewModel(currentUser: currentUser, otherUser: otherUser,
-                                                                   chatId: chatId,repository: repository))
+        _viewModel = StateObject(wrappedValue: PingDetailViewModel(currentUser: currentUser, otherUser: otherUser, repository: repository))
     }
     
     // MARK: - BODY
@@ -177,7 +174,6 @@ private extension PingDetailView {
             
             // MARK: - RIGHT SIDE (STATE BASED)
             if isTyping {
-                
                 // SEND BUTTON
                 Button {
                     sendMessage()
