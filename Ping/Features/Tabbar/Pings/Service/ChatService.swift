@@ -5,9 +5,8 @@ final class ChatService: ChatServiceProtocol {
     private let db = Firestore.firestore()
     
     func sendMessage(text: String, currentUser: UserModel, otherUser: UserModel, completion: @escaping (Result<Void, Error>) -> Void) {
-        let chatId = [currentUser.id ?? "" , otherUser.id ?? ""]
-            .sorted()
-            .joined(separator: "_")
+        
+        let chatId: String = createChatId(currentUser: currentUser, otherUser: otherUser)
         
         let chatRef = db.collection("chats").document(chatId)
         
@@ -38,19 +37,16 @@ final class ChatService: ChatServiceProtocol {
             let message = MessageModel(
                 id: messageRef.documentID,
                 text: text,
-                timestamp: Date(),
-                senderId: currentUser.id ?? ""
+                senderId: currentUser.id ?? "",
+                timestamp: Date()
             )
-            
-            do {
-                
-                try messageRef.setData(from: message)
-                
-                completion(.success(()))
-                
-            } catch {
-                
-                completion(.failure(error))
+            Task { @MainActor in
+                do {
+                    try messageRef.setData(from: message)
+                    completion(.success(()))
+                } catch {
+                    completion(.failure(error))
+                }
             }
         }
     }
@@ -83,5 +79,35 @@ final class ChatService: ChatServiceProtocol {
                 
                 completion(chats)
             }
+    }
+    
+    func fetchMessages(currentUser: UserModel, otherUser: UserModel, completion: @escaping ([MessageModel]) -> Void) {
+        
+        let chatId: String = createChatId(currentUser: currentUser, otherUser: otherUser)
+
+        db.collection("chats")
+            .document(chatId)
+            .collection("messages")
+            .order(by: "timestamp", descending: false)
+            .addSnapshotListener { snapshot, error in
+                
+                guard let documents = snapshot?.documents else {
+                    completion([])
+                    return
+                }
+                
+                let messages: [MessageModel] = documents.compactMap { doc in
+                    try? doc.data(as: MessageModel.self)
+                }
+                
+                completion(messages)
+            }
+    }
+    
+    private func createChatId(currentUser: UserModel, otherUser: UserModel) -> String {
+        let chatId = [currentUser.id ?? "" , otherUser.id ?? ""]
+            .sorted()
+            .joined(separator: "_")
+        return chatId
     }
 }

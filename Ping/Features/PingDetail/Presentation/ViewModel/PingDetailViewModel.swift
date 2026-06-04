@@ -25,14 +25,13 @@ final class PingDetailViewModel: ObservableObject {
 }
 
 extension PingDetailViewModel {
-
+    
     func listenMessages() {
-//        repository.observeMessages(chatId: chatId) { [weak self] messages in
-//            guard let self else { return }
-//            DispatchQueue.main.async {
-//                self.messages = messages
-//            }
-//        }
+        repository.fetchMessages(currentUser: currentUser, otherUser: otherUser) { [weak self] messages in
+            DispatchQueue.main.async {
+                self?.messages = messages
+            }
+        }
     }
 }
 

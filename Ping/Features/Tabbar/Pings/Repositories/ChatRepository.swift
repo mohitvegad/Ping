@@ -16,4 +16,8 @@ final class ChatRepository: ChatRepositoryProtocol {
         service.fetchChats(uid: uid, completion: completion)
     }
     
+    func fetchMessages(currentUser: UserModel, otherUser: UserModel, completion: @escaping ([MessageModel]) -> Void) {
+        service.fetchMessages(currentUser: currentUser, otherUser: otherUser, completion: completion)
+    }
+    
 }

@@ -1,12 +1,13 @@
 import Foundation
 import FirebaseFirestore
 
-struct MessageModel: Identifiable, Codable {
-    
-    var id: String
+struct MessageModel: Identifiable, Codable, Hashable {
+
+    @DocumentID var id: String?
+
     let text: String
-    let timestamp: Date
     let senderId: String
+    let timestamp: Date
 }
 
 enum MessageType: String, Codable {
