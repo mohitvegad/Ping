@@ -8,6 +8,7 @@ struct PingDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: PingDetailViewModel
     @State var inputText: String = ""
+    @State private var isAtBottom: Bool = true
     
     var isTyping: Bool {
         !inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -58,7 +59,7 @@ private extension PingDetailView {
                 .font(.system(size: 28))
                 .foregroundStyle(.white)
                 .frame(width: 40, height: 40)
-                .background(Color.gray)
+                .background(Color.brown)
                 .clipShape(Circle())
             
             // MARK: - Name + Status
@@ -111,42 +112,58 @@ private extension PingDetailView {
     
     var messagesView: some View {
         
-        ScrollView {
-            
-            VStack(spacing: 12) {
-                
-                ForEach(viewModel.messages) { message in
-                    
-                    let isMe = message.senderId == currentUser.id
-                    HStack {
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(spacing: 12) {
+                    ForEach(viewModel.messages) { message in
                         
-                        if isMe { Spacer(minLength: 40) }
-                        
-                        HStack(alignment: .bottom, spacing: 6) {
+                        let isMe = message.senderId == currentUser.id
+                        HStack {
                             
-                            Text(message.text)
-                                .foregroundStyle(.white)
-                                .fixedSize(horizontal: false, vertical: true)
+                            if isMe { Spacer(minLength: 40) }
                             
-                            HStack(alignment: .bottom, spacing: 3) {
+                            HStack(alignment: .bottom, spacing: 6) {
                                 
-                                Text(message.timestamp.formattedTime)
-                                    .font(.caption2)
-                                    .foregroundStyle(.white.opacity(0.6))
+                                Text(message.text)
+                                    .foregroundStyle(.white)
+                                    .fixedSize(horizontal: false, vertical: true)
                                 
-                                statusIcon(message.status)
+                                HStack(alignment: .bottom, spacing: 3) {
+                                    
+                                    Text(message.timestamp.formattedTime)
+                                        .font(.caption2)
+                                        .foregroundStyle(.white.opacity(0.6))
+                                    
+                                    statusIcon(message.status)
+                                }
                             }
+                            .padding(10)
+                            .background(isMe ? Color("PingSendBubble") : Color("PingReceiveBubble"))
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                            .frame(maxWidth: 250, alignment: isMe ? .trailing : .leading)
+                            
+                            if !isMe { Spacer(minLength: 40) }
                         }
-                        .padding(10)
-                        .background(isMe ? Color("PingSendBubble") : Color("PingReceiveBubble"))
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .frame(maxWidth: 250, alignment: isMe ? .trailing : .leading)
-                        
-                        if !isMe { Spacer(minLength: 40) }
+                        .padding(.horizontal, 10)
                     }
-                    .padding(.horizontal, 10)
+                }
+                Color.clear
+                    .frame(height: 1)
+                    .id("BOTTOM")
+            }
+            .onChange(of: viewModel.messages.count) { oldValue, newValue in
+                
+                if isAtBottom {
+                    withAnimation(.easeOut) {
+                        proxy.scrollTo("BOTTOM", anchor: .bottom)
+                    }
                 }
             }
+            .gesture(
+                DragGesture().onChanged { _ in
+                    isAtBottom = false
+                }
+            )
         }
         .padding(.top, 10)
     }

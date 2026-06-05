@@ -1,8 +1,37 @@
 import SwiftUI
 
+
 struct PingCell: View {
     
     let model: PingCellModel
+    let configuration: PingCellConfiguration
+    
+    //-------------------------------------
+    // MARK - COMPUTED PROPERY
+    //-------------------------------------
+
+    private var imageSize: CGFloat {
+        switch configuration.style {
+        case .small:
+            return 40
+            
+        case .large:
+            return 60
+        }
+    }
+    
+    private var titleFont: Font {
+        return .headline
+    }
+    
+    private var subtitleFont: Font {
+        return .subheadline
+    }
+    
+    
+    //-------------------------------------
+    // MARK - BODY
+    //-------------------------------------
 
     var body: some View {
         cellView
@@ -17,40 +46,42 @@ private extension  PingCell {
             Image(systemName: "person.fill")
                 .font(.system(size: 28))
                 .foregroundStyle(.white)
-                .frame(width: 60, height: 60)
+                .frame(width: imageSize, height: imageSize)
                 .background(.brown)
                 .clipShape(Circle())
             
             VStack(alignment: .leading, spacing: 2) {
                 
                 HStack {
-                    
                     Text(model.title)
-                        .font(.headline)
+                        .font(titleFont)
                         .foregroundStyle(.white)
                     
                     Spacer()
                     
-                    Text("")
-                        .font(.caption)
-                        .foregroundStyle(.green)
+                    if configuration.showsDate {
+                        Text(model.date.formattedTime)
+                            .font(.caption)
+                            .foregroundStyle(.gray)
+                    }
                 }
                 
                 HStack {
-                    
                     Text(model.subtitle)
-                        .font(.subheadline)
+                        .font(subtitleFont)
                         .foregroundStyle(.gray)
                         .lineLimit(2)
                     
                     Spacer()
                     
-//                    Text("")
-//                        .font(.caption2.bold())
-//                        .foregroundStyle(.black)
-//                        .padding(6)
-//                        .background(.green)
-//                        .clipShape(Circle())
+                    if configuration.showsUnreadCount {
+                        Text("1")
+                            .font(.caption2.bold())
+                            .foregroundStyle(.black)
+                            .padding(6)
+                            .background(.green)
+                            .clipShape(Circle())
+                    }
                 }
             }
         }
@@ -60,6 +91,3 @@ private extension  PingCell {
     }
 }
 
-#Preview {
-    PingCell(model: PingCellModel(id: "", title: "", subtitle: "", imageName: ""))
-}

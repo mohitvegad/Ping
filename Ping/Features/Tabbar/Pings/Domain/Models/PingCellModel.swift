@@ -6,4 +6,5 @@ struct PingCellModel: Identifiable, Hashable {
     let title: String
     let subtitle: String
     let imageName: String
+    let date: Date
 }

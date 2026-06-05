@@ -31,7 +31,7 @@ struct PingsView: View {
                         Button {
                             openChat(chat)
                         } label: {
-                            PingCell(model: chat.toPingCellModel())
+                            PingCell(model: chat.toPingCellModel(), configuration: .chat)
                         }
                         .buttonStyle(.plain)
                     }

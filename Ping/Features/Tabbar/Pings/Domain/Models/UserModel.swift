@@ -5,6 +5,7 @@ struct UserModel: Identifiable, Codable, Hashable {
     @DocumentID var id: String?
     let firstName: String
     let lastName: String
+    let pingStatus: String?
 }
 
 extension UserModel {
@@ -13,8 +14,9 @@ extension UserModel {
         PingCellModel(
             id: id ?? "",
             title: "\(firstName) \(lastName)",
-            subtitle: "Tap to start chat",
-            imageName: "person.fill"
+            subtitle: pingStatus ?? "",
+            imageName: "person.fill",
+            date: Date()
         )
     }
 }

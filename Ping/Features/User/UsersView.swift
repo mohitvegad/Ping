@@ -31,7 +31,7 @@ struct UsersView: View {
                             onSelectUser(user)
                             dismiss()
                         } label: {
-                            PingCell(model: user.toPingCellModel())
+                            PingCell(model: user.toPingCellModel(), configuration: .user)
                         }
                         .buttonStyle(.plain)
                     }

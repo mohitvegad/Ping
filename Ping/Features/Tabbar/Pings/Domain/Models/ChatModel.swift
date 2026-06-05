@@ -18,7 +18,8 @@ extension ChatModel {
             id: otherUser?.id ?? "",
             title: "\(otherUser?.firstName ?? "") \(otherUser?.lastName ?? "")",
             subtitle: lastMessage,
-            imageName: "person.fill"
+            imageName: "person.fill",
+            date: updatedAt
         )
     }
 }
