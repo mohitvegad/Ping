@@ -8,8 +8,8 @@ final class AuthRepository: AuthRepositoryProtocol {
         self.authService = authService
     }
 
-    // MARK: - LOGIN
-
+    // MARK: - AUTHENTICATION
+    
     func login(email: String, password: String, completion: @escaping (Result<String, Error>) -> Void) {
 
         authService.login(email: email, password: password) { result in
@@ -17,54 +17,32 @@ final class AuthRepository: AuthRepositoryProtocol {
             switch result {
 
             case .success(let uid):
-
                 print("LOGIN SUCCESS:", uid)
-
                 completion(.success(uid))
 
             case .failure(let error):
-
                 completion(.failure(error))
             }
         }
     }
 
-    // MARK: - FETCH CURRENT USER
+    // MARK: - FETCH USER
     
     func getCurrentUser(uid: String, completion: @escaping (Result<UserModel, Error>) -> Void) {
         authService.getCurrentUser(uid: uid, completion: completion)
     }
-    
-    // MARK: - SIGN UP
 
-    func signUp(email: String, password: String, completion: @escaping (Result<Void, Error>) -> Void) {
-
-        authService.signUp(email: email, password: password) { result in
-
-            switch result {
-
-            case .success(let uid):
-
-                print("SIGNUP SUCCESS:", uid)
-
-                completion(.success(()))
-
-            case .failure(let error):
-
-                completion(.failure(error))
-            }
+    func fetchUsers(uid: String, completion: @escaping ([UserModel]) -> Void) {
+        authService.fetchUsers(uid: uid) { users in
+            // BUSINESS LOGIC LAYER
+            let filteredUsers = users.filter { $0.id != uid }
+            completion(filteredUsers)
         }
     }
-
+    
     // MARK: - LOGOUT
-
+    
     func logout() throws {
         try authService.logout()
-    }
-
-    // MARK: - CURRENT USER
-
-    func currentUserId() -> String? {
-        authService.currentUserId()
     }
 }

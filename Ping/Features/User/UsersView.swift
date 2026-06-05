@@ -3,7 +3,7 @@ import SwiftUI
 struct UsersView: View {
 
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel: UsersViewModel
+    @StateObject private var viewModel = UsersViewModel()
 
     var currentUserId: String
     var onSelectUser: (UserModel) -> Void
@@ -15,13 +15,6 @@ struct UsersView: View {
     init(currentUserId: String, onSelectUser: @escaping (UserModel) -> Void) {
         self.currentUserId = currentUserId
         self.onSelectUser = onSelectUser
-
-        let service = UserService()
-        let repository = UserRepository(service: service)
-
-        _viewModel = StateObject(
-            wrappedValue: UsersViewModel(repository: repository)
-        )
     }
 
     var body: some View {
@@ -56,9 +49,6 @@ struct UsersView: View {
                 }
                 .foregroundStyle(.white)
             }
-        }
-        .onAppear {
-            viewModel.loadUsers(currentUserId: currentUserId)
         }
     }
 }

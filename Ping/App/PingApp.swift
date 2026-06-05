@@ -9,7 +9,6 @@ struct PingApp: App {
     // MARK: - INIT
     
     init() {
-        
         FirebaseApp.configure()
         
         let authService = FirebaseAuthService()

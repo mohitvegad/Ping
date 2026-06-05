@@ -16,7 +16,6 @@ struct PingsView: View {
         
         let service = ChatService()
         let repository = ChatRepository(service: service)
-        
         _viewModel = StateObject(wrappedValue: PingsViewViewModel(repository: repository))
     }
     
@@ -29,7 +28,14 @@ struct PingsView: View {
             ScrollView {
                 VStack(spacing: 0) {
                     ForEach(viewModel.chats) { chat in
-                        PingCell(model: chat.toPingCellModel())
+                        Button {
+                            openChat(chat)
+                        } label: {
+                            if let otherUser = UserStore.shared.user(id: chat.otherUserId(currentUserId: currentUserId)) {
+                                PingCell(model: chat.toPingCellModel())
+                            }
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
             }
@@ -64,5 +70,21 @@ struct PingsView: View {
         .onAppear {
             viewModel.loadChats(uid: currentUserId)
         }
+    }
+}
+
+//-------------------------------------
+// MARK - EXTENSION
+//-------------------------------------
+
+extension PingsView {
+    
+    private func openChat(_ chat: ChatModel) {
+        
+        let otherUserId = chat.otherUserId(currentUserId: currentUserId)
+        
+        guard let otherUser = UserStore.shared.user(id: otherUserId) else { return }
+        
+        path.append(otherUser)
     }
 }

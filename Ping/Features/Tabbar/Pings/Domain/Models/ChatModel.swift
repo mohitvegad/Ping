@@ -1,15 +1,8 @@
 import Foundation
 import FirebaseFirestore
 
-struct ParticipantInfo: Codable, Hashable {
-    let name: String
-}
-
-
 struct ChatModel: Identifiable, Codable, Hashable {
-
     @DocumentID var id: String?
-
     let participants: [String]
     let lastMessage: String
     let updatedAt: Date
@@ -17,10 +10,8 @@ struct ChatModel: Identifiable, Codable, Hashable {
 }
 
 extension ChatModel {
-
     func toPingCellModel() -> PingCellModel {
-
-        let otherUserId = participants.first ?? "Unknown"
+        let otherUserId = otherUserId(currentUserId: CurrentUserSession.shared.userId ?? "")
 
         return PingCellModel(
             id: otherUserId,

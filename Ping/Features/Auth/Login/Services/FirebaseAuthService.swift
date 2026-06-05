@@ -49,25 +49,25 @@ final class FirebaseAuthService: AuthServiceProtocol {
                 }
             }
     }
-    // MARK: - SIGN UP
-
-    func signUp(email: String, password: String, completion: @escaping (Result<String, Error>) -> Void) {
-
-        Auth.auth().createUser(withEmail: email, password: password) { result, error in
-
-            if let error {
-                completion(.failure(error))
-                return
+    
+    func fetchUsers(uid: String, completion: @escaping ([UserModel]) -> Void) {
+        
+        db.collection("users")
+            .getDocuments { snapshot, error in
+                print("Documents count:", snapshot?.documents.count ?? 0)
+                snapshot?.documents.forEach {
+                    print($0.data())
+                }
+                let users = snapshot?.documents.compactMap {
+                    try? $0.data(as: UserModel.self)
+                } ?? []
+                
+                print("Decoded users:", users.count)
+                
+                completion(users)
             }
-
-            guard let uid = result?.user.uid else {
-                completion(.failure(AuthError.userNotFound))
-                return
-            }
-
-            completion(.success(uid))
-        }
     }
+
 
     // MARK: - LOGOUT
 
