@@ -38,7 +38,8 @@ final class ChatService: ChatServiceProtocol {
                 id: messageRef.documentID,
                 text: text,
                 senderId: currentUser.id ?? "",
-                timestamp: Date()
+                timestamp: Date(),
+                status: .pending
             )
             Task { @MainActor in
                 do {

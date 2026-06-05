@@ -16,7 +16,7 @@ extension Date {
     
     private static let timeFormatter: DateFormatter = {
         let f = DateFormatter()
-        f.dateFormat = "HH:mm a"
+        f.dateFormat = "HH:mm"
         return f
     }()
     

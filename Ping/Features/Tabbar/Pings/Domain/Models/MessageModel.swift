@@ -4,10 +4,10 @@ import FirebaseFirestore
 struct MessageModel: Identifiable, Codable, Hashable {
 
     @DocumentID var id: String?
-
     let text: String
     let senderId: String
     let timestamp: Date
+    var status: MessageStatus
 }
 
 enum MessageType: String, Codable {
@@ -15,10 +15,10 @@ enum MessageType: String, Codable {
 }
 
 enum MessageStatus: String, Codable {
-    case sending
+    case pending
     case sent
     case delivered
-    case read
+    case seen
 }
 
 

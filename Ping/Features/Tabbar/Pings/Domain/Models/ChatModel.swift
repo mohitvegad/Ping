@@ -12,10 +12,11 @@ struct ChatModel: Identifiable, Codable, Hashable {
 extension ChatModel {
     func toPingCellModel() -> PingCellModel {
         let otherUserId = otherUserId(currentUserId: CurrentUserSession.shared.userId ?? "")
+        let otherUser = UserStore.shared.user(id: otherUserId)
 
         return PingCellModel(
-            id: otherUserId,
-            title: otherUserId,
+            id: otherUser?.id ?? "",
+            title: "\(otherUser?.firstName ?? "") \(otherUser?.lastName ?? "")",
             subtitle: lastMessage,
             imageName: "person.fill"
         )

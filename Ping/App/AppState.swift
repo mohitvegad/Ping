@@ -22,7 +22,6 @@ final class AppState: ObservableObject {
     }
     
     func start() {
-        
         guard let uid = keychain.get("userId") else {
             state = .loggedOut
             return

@@ -31,14 +31,14 @@ struct PingsView: View {
                         Button {
                             openChat(chat)
                         } label: {
-                            if let otherUser = UserStore.shared.user(id: chat.otherUserId(currentUserId: currentUserId)) {
-                                PingCell(model: chat.toPingCellModel())
-                            }
+                            PingCell(model: chat.toPingCellModel())
                         }
                         .buttonStyle(.plain)
                     }
                 }
             }
+            .navigationTitle("Pings")
+            .navigationBarTitleDisplayMode(.inline)
             
             // MARK: - NAVIGATION
             .navigationDestination(for: UserModel.self) { otherUser in

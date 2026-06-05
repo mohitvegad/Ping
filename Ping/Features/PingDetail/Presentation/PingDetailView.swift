@@ -118,30 +118,37 @@ private extension PingDetailView {
                 ForEach(viewModel.messages) { message in
                     
                     let isMe = message.senderId == currentUser.id
-                    
                     HStack {
                         
-                        if isMe { Spacer() }
+                        if isMe { Spacer(minLength: 40) }
                         
-                        Text(message.text)
-                            .padding(10)
-                            .background(
-                                isMe
-                                ? Color.blue
-                                : Color.gray.opacity(0.3)
-                            )
-                            .foregroundStyle(.white)
-                            .cornerRadius(12)
-                            .frame(maxWidth: 250,
-                                   alignment: isMe ? .trailing : .leading)
+                        HStack(alignment: .bottom, spacing: 6) {
+                            
+                            Text(message.text)
+                                .foregroundStyle(.white)
+                                .fixedSize(horizontal: false, vertical: true)
+                            
+                            HStack(alignment: .bottom, spacing: 3) {
+                                
+                                Text(message.timestamp.formattedTime)
+                                    .font(.caption2)
+                                    .foregroundStyle(.white.opacity(0.6))
+                                
+                                statusIcon(message.status)
+                            }
+                        }
+                        .padding(10)
+                        .background(isMe ? Color("PingSendBubble") : Color("PingReceiveBubble"))
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                        .frame(maxWidth: 250, alignment: isMe ? .trailing : .leading)
                         
-                        if !isMe { Spacer() }
+                        if !isMe { Spacer(minLength: 40) }
                     }
-                    .padding(.horizontal)
+                    .padding(.horizontal, 10)
                 }
             }
-            .padding(.top, 10)
         }
+        .padding(.top, 10)
     }
 }
 
@@ -230,3 +237,31 @@ private extension PingDetailView {
     }
 }
 
+
+private extension PingDetailView{
+    
+    @ViewBuilder
+    func statusIcon(_ status: MessageStatus) -> some View {
+        switch status {
+        case .pending:
+            Image(systemName: "clock")
+                .font(.caption2)
+                .foregroundStyle(.gray)
+            
+        case .sent:
+            Image(systemName: "checkmark")
+                .font(.caption2)
+                .foregroundStyle(.gray)
+            
+        case .delivered:
+            Image(systemName: "checkmark.circle")
+                .font(.caption2)
+                .foregroundStyle(.gray)
+            
+        case .seen:
+            Image(systemName: "checkmark.circle.fill")
+                .font(.caption2)
+                .foregroundStyle(.blue)
+        }
+    }
+}

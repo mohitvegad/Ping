@@ -27,7 +27,6 @@ struct UsersView: View {
                 VStack(spacing: 0) {
 
                     ForEach(viewModel.filteredUsers) { user in
-
                         Button {
                             onSelectUser(user)
                             dismiss()
