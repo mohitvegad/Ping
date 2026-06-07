@@ -48,4 +48,8 @@ extension PingDetailViewModel {
             }
         }
     }
+    
+    func onChatAppear() {
+        repository.markDelivered(currentUser: currentUser, otherUser: otherUser)
+    }
 }

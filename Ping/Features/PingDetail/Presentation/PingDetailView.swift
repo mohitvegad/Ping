@@ -39,6 +39,9 @@ struct PingDetailView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.black)
         .navigationBarBackButtonHidden(true)
+        .onAppear {
+            viewModel.onChatAppear()
+        }
     }
 }
 
@@ -195,7 +198,7 @@ struct MessageBubble: View {
     @ViewBuilder
     private var statusIcon: some View {
         switch message.status {
-        case .pending:
+        case .sending:
             Image(systemName: "clock")
                 .font(.caption2)
                 .foregroundStyle(.gray)
@@ -204,13 +207,19 @@ struct MessageBubble: View {
                 .font(.caption2)
                 .foregroundStyle(.gray)
         case .delivered:
-            Image(systemName: "checkmark.circle")
-                .font(.caption2)
-                .foregroundStyle(.gray)
+            HStack(spacing: -6) {
+                Image(systemName: "checkmark")
+                Image(systemName: "checkmark")
+            }
+            .font(.caption2)
+            .foregroundStyle(.gray)
         case .seen:
-            Image(systemName: "checkmark.circle.fill")
-                .font(.caption2)
-                .foregroundStyle(.blue)
+            HStack(spacing: -4) {
+                Image(systemName: "checkmark")
+                Image(systemName: "checkmark")
+            }
+            .font(.caption2)
+            .foregroundStyle(.blue)
         }
     }
 }

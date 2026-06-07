@@ -15,7 +15,7 @@ enum MessageType: String, Codable {
 }
 
 enum MessageStatus: String, Codable {
-    case pending
+    case sending
     case sent
     case delivered
     case seen

@@ -4,53 +4,7 @@ final class ChatService: ChatServiceProtocol {
     
     private let db = Firestore.firestore()
     
-    func sendMessage(text: String, currentUser: UserModel, otherUser: UserModel, completion: @escaping (Result<Void, Error>) -> Void) {
-        
-        let chatId: String = createChatId(currentUser: currentUser, otherUser: otherUser)
-        
-        let chatRef = db.collection("chats").document(chatId)
-        
-        chatRef.getDocument { snapshot, error in
-            
-            if snapshot?.exists == false {
-                
-                // CREATE CHAT ONLY ONCE
-                let chatData: [String: Any] = [
-                    "id": chatId,
-                    "participants": [currentUser.id ?? "", otherUser.id ?? ""],
-                    "lastMessage": text,
-                    "updatedAt": Date()
-                ]
-                
-                chatRef.setData(chatData)
-            }
-            
-            // 2. UPDATE CHAT
-            chatRef.updateData([
-                "lastMessage": text,
-                "updatedAt": Date()
-            ])
-            
-            // SEND MESSAGE
-            let messageRef = chatRef.collection("messages").document()
-            
-            let message = MessageModel(
-                id: messageRef.documentID,
-                text: text,
-                senderId: currentUser.id ?? "",
-                timestamp: Date(),
-                status: .pending
-            )
-            Task { @MainActor in
-                do {
-                    try messageRef.setData(from: message)
-                    completion(.success(()))
-                } catch {
-                    completion(.failure(error))
-                }
-            }
-        }
-    }
+    //MARK: - CHAT SERVICE
     
     func fetchChats(uid: String, completion: @escaping ([ChatModel]) -> Void) {
         db.collection("chats")
@@ -81,10 +35,62 @@ final class ChatService: ChatServiceProtocol {
             }
     }
     
+    //MARK: - MESSAGE SERVICE
+    
+    func sendMessage(text: String, currentUser: UserModel, otherUser: UserModel, completion: @escaping (Result<Void, Error>) -> Void) {
+        
+        let chatId: String = createChatId(currentUser: currentUser, otherUser: otherUser)
+        
+        let chatRef = db.collection("chats").document(chatId)
+        
+        chatRef.getDocument { snapshot, error in
+            
+            if snapshot?.exists == false {
+                
+                // CREATE CHAT ONLY ONCE
+                let chatData: [String: Any] = [
+                    "id": chatId,
+                    "participants": [currentUser.id ?? "", otherUser.id ?? ""],
+                    "lastMessage": text,
+                    "updatedAt": FieldValue.serverTimestamp()
+                ]
+                
+                chatRef.setData(chatData)
+            }
+            
+            // 2. UPDATE CHAT
+            chatRef.updateData([
+                "lastMessage": text,
+                "updatedAt": FieldValue.serverTimestamp()
+            ])
+            
+            // SEND MESSAGE
+            let messageRef = chatRef.collection("messages").document()
+            
+            let message = MessageModel(
+                id: messageRef.documentID,
+                text: text,
+                senderId: currentUser.id ?? "",
+                timestamp: Date(),
+                status: .sent
+            )
+            Task { @MainActor in
+                do {
+                    try messageRef.setData(from: message)
+                    completion(.success(()))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+    
+    
+    
     func fetchMessages(currentUser: UserModel, otherUser: UserModel, completion: @escaping ([MessageModel]) -> Void) {
         
         let chatId: String = createChatId(currentUser: currentUser, otherUser: otherUser)
-
+        
         db.collection("chats")
             .document(chatId)
             .collection("messages")
@@ -101,6 +107,39 @@ final class ChatService: ChatServiceProtocol {
                 }
                 
                 completion(messages)
+            }
+    }
+    
+    func markDelivered(currentUser: UserModel, otherUser: UserModel) {
+        
+        let chatId: String = createChatId(currentUser: currentUser, otherUser: otherUser)
+        
+        let messagesRef = db.collection("chats").document(chatId)
+            .collection("messages")
+        
+        messagesRef
+            .whereField("senderId", isNotEqualTo: currentUser.id ?? "")
+            .whereField("status", isEqualTo: MessageStatus.sent.rawValue)
+            .getDocuments { snapshot, error in
+                
+                if let error = error {
+                    print("markDelivered error: \(error.localizedDescription)")
+                    return
+                }
+                
+                guard let docs = snapshot?.documents, !docs.isEmpty else {
+                    print("markDelivered: no matching docs")
+                    return
+                }
+                
+                let batch = self.db.batch()
+                for doc in docs {
+                    batch.updateData(
+                        ["status": MessageStatus.seen.rawValue],
+                        forDocument: doc.reference
+                    )
+                }
+                batch.commit()
             }
     }
     
