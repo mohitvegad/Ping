@@ -37,6 +37,14 @@ struct RootTabView: View {
                 .tabItem {
                     Label("Updates", systemImage: "circle.dashed")
                 }
+                
+                // PING UPDATE VIEW TAB
+                NavigationStack {
+                    SettingsView()
+                }
+                .tabItem {
+                    Label("Setting", systemImage: "gearshape.fill")
+                }
             }
             .tint(.white)
             

@@ -9,6 +9,7 @@ struct PingDetailView: View {
     @StateObject private var viewModel: PingDetailViewModel
     @State var inputText: String = ""
     @State private var isAtBottom: Bool = true
+    @State private var scrollTrigger: UUID = UUID()
     
     var isTyping: Bool {
         !inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -62,7 +63,7 @@ private extension PingDetailView {
                 .background(Color.brown)
                 .clipShape(Circle())
             
-            // MARK: - Name + Status
+            // MARK: - NAME
             
             VStack(alignment: .leading, spacing: 2) {
                 
@@ -111,63 +112,109 @@ private extension PingDetailView {
 private extension PingDetailView {
     
     var messagesView: some View {
-        
         ScrollViewReader { proxy in
             ScrollView {
-                VStack(spacing: 12) {
+                LazyVStack(spacing: 12) {
                     ForEach(viewModel.messages) { message in
                         
                         let isMe = message.senderId == currentUser.id
-                        HStack {
-                            
-                            if isMe { Spacer(minLength: 40) }
-                            
-                            HStack(alignment: .bottom, spacing: 6) {
-                                
-                                Text(message.text)
-                                    .foregroundStyle(.white)
-                                    .fixedSize(horizontal: false, vertical: true)
-                                
-                                HStack(alignment: .bottom, spacing: 3) {
-                                    
-                                    Text(message.timestamp.formattedTime)
-                                        .font(.caption2)
-                                        .foregroundStyle(.white.opacity(0.6))
-                                    
-                                    statusIcon(message.status)
-                                }
-                            }
-                            .padding(10)
-                            .background(isMe ? Color("PingSendBubble") : Color("PingReceiveBubble"))
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-                            .frame(maxWidth: 250, alignment: isMe ? .trailing : .leading)
-                            
-                            if !isMe { Spacer(minLength: 40) }
+                        let isLast = message.id == viewModel.messages.last?.id
+
+                        MessageBubble(message: message, isMe: isMe)
+                        .id(message.id)
+                        
+                        .onAppear {
+                            if isLast { isAtBottom = true }
                         }
-                        .padding(.horizontal, 10)
+                        .onDisappear {
+                            if isLast { isAtBottom = false }
+                        }
                     }
                 }
-                Color.clear
-                    .frame(height: 1)
-                    .id("BOTTOM")
+                .padding(.top, 10)
             }
-            .onChange(of: viewModel.messages.count) { oldValue, newValue in
-                
+            
+            // Open at bottom
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                    proxy.scrollTo(viewModel.messages.last?.id, anchor: .bottom)
+                }
+            }
+            
+            // New message received
+            .onChange(of: viewModel.messages.count) { _, _ in
                 if isAtBottom {
-                    withAnimation(.easeOut) {
-                        proxy.scrollTo("BOTTOM", anchor: .bottom)
+                    withAnimation(.easeOut(duration: 0.2)) {
+                        proxy.scrollTo(viewModel.messages.last?.id, anchor: .bottom)
                     }
                 }
             }
-            .gesture(
-                DragGesture().onChanged { _ in
-                    isAtBottom = false
+            
+            // user sent a message
+            .onChange(of: scrollTrigger) { _, _ in
+                withAnimation(.easeOut(duration: 0.2)) {
+                    proxy.scrollTo(viewModel.messages.last?.id, anchor: .bottom)
                 }
-            )
+            }
         }
-        .padding(.top, 10)
     }
 }
+
+struct MessageBubble: View {
+    
+    let message: MessageModel
+    let isMe: Bool
+    
+    var body: some View {
+        HStack {
+            if isMe { Spacer(minLength: 40) }
+            
+            HStack(alignment: .bottom, spacing: 6) {
+                Text(message.text)
+                    .foregroundStyle(.white)
+                    .fixedSize(horizontal: false, vertical: true)
+                
+                HStack(alignment: .bottom, spacing: 3) {
+                    Text(message.timestamp.formattedTime)
+                        .font(.caption2)
+                        .foregroundStyle(.white.opacity(0.6))
+                    
+                    if isMe { statusIcon }
+                }
+            }
+            .padding(10)
+            .background(isMe ? Color("PingSendBubble") : Color("PingReceiveBubble"))
+            .clipShape(RoundedRectangle(cornerRadius: 16))
+            .frame(maxWidth: 250, alignment: isMe ? .trailing : .leading)
+            
+            if !isMe { Spacer(minLength: 40) }
+        }
+        .padding(.horizontal, 10)
+    }
+    
+    @ViewBuilder
+    private var statusIcon: some View {
+        switch message.status {
+        case .pending:
+            Image(systemName: "clock")
+                .font(.caption2)
+                .foregroundStyle(.gray)
+        case .sent:
+            Image(systemName: "checkmark")
+                .font(.caption2)
+                .foregroundStyle(.gray)
+        case .delivered:
+            Image(systemName: "checkmark.circle")
+                .font(.caption2)
+                .foregroundStyle(.gray)
+        case .seen:
+            Image(systemName: "checkmark.circle.fill")
+                .font(.caption2)
+                .foregroundStyle(.blue)
+        }
+    }
+}
+
 
 // MARK: - INPUT
 private extension PingDetailView {
@@ -244,41 +291,10 @@ private extension PingDetailView {
 private extension PingDetailView {
     
     func sendMessage() {
-        
         let text = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return }
-        
         viewModel.sendMessage(text)
-        
         inputText = ""
-    }
-}
-
-
-private extension PingDetailView{
-    
-    @ViewBuilder
-    func statusIcon(_ status: MessageStatus) -> some View {
-        switch status {
-        case .pending:
-            Image(systemName: "clock")
-                .font(.caption2)
-                .foregroundStyle(.gray)
-            
-        case .sent:
-            Image(systemName: "checkmark")
-                .font(.caption2)
-                .foregroundStyle(.gray)
-            
-        case .delivered:
-            Image(systemName: "checkmark.circle")
-                .font(.caption2)
-                .foregroundStyle(.gray)
-            
-        case .seen:
-            Image(systemName: "checkmark.circle.fill")
-                .font(.caption2)
-                .foregroundStyle(.blue)
-        }
+        scrollTrigger = UUID()
     }
 }

@@ -77,7 +77,6 @@ final class ChatService: ChatServiceProtocol {
                         return nil
                     }
                 }
-                
                 completion(chats)
             }
     }
