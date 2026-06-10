@@ -25,30 +25,6 @@ final class FirebaseAuthService: FirebaseAuthServiceProtocol {
             completion(.success(uid))
         }
     }
-
-    func getCurrentUser(uid: String,completion: @escaping (Result<UserModel, Error>) -> Void) {
-        db.collection("users")
-            .document(uid)
-            .getDocument { snapshot, error in
-
-                if let error = error {
-                    completion(.failure(error))
-                    return
-                }
-
-                guard let snapshot = snapshot else {
-                    completion(.failure(NSError(domain: "Firestore", code: -1)))
-                    return
-                }
-
-                do {
-                    let user = try snapshot.data(as: UserModel.self)
-                    completion(.success(user))
-                } catch {
-                    completion(.failure(error))
-                }
-            }
-    }
     
     func fetchUsers(uid: String, completion: @escaping ([UserModel]) -> Void) {
         

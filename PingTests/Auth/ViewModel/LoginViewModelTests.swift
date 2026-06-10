@@ -18,10 +18,8 @@ final class LoginViewModelTests: XCTestCase {
             userStore: store
         )
 
-        let sut = LoginViewModel(
-            appConfig: appConfig,
-            repository: repository
-        )
+  
+        let sut = LoginViewModel(appConfig: appConfig, repository: repository, userSession: session, userStore: store)
 
         return (sut, repository)
     }
@@ -49,14 +47,13 @@ final class LoginViewModelTests: XCTestCase {
         let (sut, repository) = makeSUT()
 
         repository.loginResult = .success("123")
-        repository.currentUserResult = .success(
-            UserModel(
-                id: "123",
-                firstName: "Test",
-                lastName: "User",
-                pingStatus: nil
-            )
-        )
+        repository.usersResult = UsersResult(currentUser: UserModel(
+            id: "123",
+            firstName: "Test",
+            lastName: "User",
+            pingStatus: nil
+        ), otherUsers: [])
+        
         sut.email = "test@mail.com"
         sut.password = "123456"
 

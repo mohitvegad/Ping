@@ -3,7 +3,7 @@ import Combine
 
 enum AppConfigurationState {
     case idle
-    case loggedIn(String)
+    case loggedIn(uId: String)
     case loggedOut
 }
 
@@ -30,27 +30,20 @@ final class AppConfiguration: ObservableObject {
     func start() {
         guard let uid = keychain.get("userId") else { state = .loggedOut; return }
         
-        repository.getCurrentUser(uid: uid) { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .success(let user):
-                userSession.setUser(user)
-                self.state = .loggedIn(uid)
-            case .failure:
-                self.logout()
-            }
-        }
-        
-        repository.fetchUsers(uid: uid) { [weak self] users in
+        repository.fetchUsers(uid: uid) { [weak self] result in
             guard let self = self else { return }
-            userStore.setUsers(users)
+            self.state = .loggedIn(uId: uid)
+            if let currentUser = result.currentUser {
+                self.userSession.setUser(currentUser)
+            }
+            self.userStore.setUsers(result.otherUsers)
         }
     }
     
     func loginSuccess(uid: String) {
         keychain.save(uid, key: "userId")
         userSession.setUserId(uid)
-        state = .loggedIn(uid)
+        state = .loggedIn(uId: uid)
     }
     
     func logout() {

@@ -1,5 +1,10 @@
 import Foundation
 
+struct UsersResult {
+    let currentUser: UserModel?
+    let otherUsers: [UserModel]
+}
+
 final class AuthRepository: AuthRepositoryProtocol {
 
     private let authService: FirebaseAuthServiceProtocol
@@ -15,16 +20,17 @@ final class AuthRepository: AuthRepositoryProtocol {
     }
 
     // MARK: - FETCH USER
-    
-    func getCurrentUser(uid: String, completion: @escaping (Result<UserModel, Error>) -> Void) {
-        authService.getCurrentUser(uid: uid, completion: completion)
-    }
 
-    func fetchUsers(uid: String, completion: @escaping ([UserModel]) -> Void) {
+    func fetchUsers(uid: String, completion: @escaping (UsersResult) -> Void) {
         authService.fetchUsers(uid: uid) { users in
-            // BUSINESS LOGIC LAYER
-            let filteredUsers = users.filter { $0.id != uid }
-            completion(filteredUsers)
+            
+            let currentUser = users.first { $0.id == uid }
+            
+            let otherUsers = users.filter {
+                $0.id != uid
+            }
+
+            completion(UsersResult(currentUser: currentUser, otherUsers: otherUsers))
         }
     }
     

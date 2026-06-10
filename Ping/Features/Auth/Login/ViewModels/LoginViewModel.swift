@@ -17,10 +17,14 @@ final class LoginViewModel: ObservableObject {
     
     private let appConfig: AppConfiguration
     private let repository: AuthRepositoryProtocol
+    private let userSession: CurrentUserSessionProtocol
+    private let userStore: UserStoreProtocol
     
-    init(appConfig: AppConfiguration, repository: AuthRepositoryProtocol) {
+    init(appConfig: AppConfiguration, repository: AuthRepositoryProtocol, userSession: CurrentUserSessionProtocol, userStore: UserStoreProtocol) {
         self.appConfig = appConfig
         self.repository = repository
+        self.userSession = userSession
+        self.userStore = userStore
     }
     
     func login() {
@@ -42,22 +46,17 @@ final class LoginViewModel: ObservableObject {
             switch result {
                 
             case .success(let uid):
-                
-                self.repository.getCurrentUser(uid: uid) { result in
+                repository.fetchUsers(uid: uid) { [weak self] result in
+                    guard let self = self else { return }
                     
-                    switch result {
-                        
-                    case .success(let user):
-                        self.appConfig.loginSuccess(uid: uid)
-                        self.state = .authenticated
-                        
-                    case .failure(let error):
-                        
-                        self.state = .unauthenticated(error.localizedDescription)
-                        
+                    self.state = .authenticated
+                    self.appConfig.loginSuccess(uid: uid)
+                    
+                    if let currentUser = result.currentUser {
+                        self.userSession.setUser(currentUser)
                     }
+                    self.userStore.setUsers(result.otherUsers)
                 }
-                
             case .failure(let error):
                 
                 self.state = .unauthenticated(error.localizedDescription)
