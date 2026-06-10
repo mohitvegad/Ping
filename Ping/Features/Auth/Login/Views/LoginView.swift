@@ -4,16 +4,16 @@ struct LoginView: View {
     
     @StateObject private var viewModel: LoginViewModel
     
-    var appConfig: AppConfiguration
+    var appSession: AppSession
     
-    init(appConfig: AppConfiguration) {
-        self.appConfig = appConfig
+    init(appSession: AppSession) {
+        self.appSession = appSession
         let service = FirebaseAuthService()
         let repo = AuthRepository(authService: service)
         let userSession: CurrentUserSessionProtocol = CurrentUserSession.shared
         let userStore: UserStoreProtocol = UserStore.shared
         
-        _viewModel = StateObject(wrappedValue: LoginViewModel(appConfig: appConfig,
+        _viewModel = StateObject(wrappedValue: LoginViewModel(appSession: appSession,
                                                               repository: repo,
                                                               userSession: userSession,
                                                               userStore: userStore)

@@ -11,7 +11,7 @@ final class LoginViewModelTests: XCTestCase {
         let session = MockUserSession()
         let store = MockUserStore()
 
-        let appConfig = AppConfiguration(
+        let appSession = AppSession(
             repository: repository,
             keyChain: keychain,
             userSession: session,
@@ -19,7 +19,7 @@ final class LoginViewModelTests: XCTestCase {
         )
 
   
-        let sut = LoginViewModel(appConfig: appConfig, repository: repository, userSession: session, userStore: store)
+        let sut = LoginViewModel(appSession: appSession, repository: repository, userSession: session, userStore: store)
 
         return (sut, repository)
     }

@@ -1,17 +1,16 @@
 import Foundation
 import Combine
 
-enum AppConfigurationState {
+enum AppSessionState {
     case idle
     case loggedIn(uId: String)
     case loggedOut
 }
 
-
 @MainActor
-final class AppConfiguration: ObservableObject {
+final class AppSession: ObservableObject {
     
-    @Published var state: AppConfigurationState = .idle
+    @Published var state: AppSessionState = .idle
     
     private let repository: AuthRepositoryProtocol
     private let keychain: KeychainServiceProtocol
@@ -49,6 +48,7 @@ final class AppConfiguration: ObservableObject {
     func logout() {
         keychain.delete("userId")
         userSession.clear()
+        userStore.clear()
         state = .loggedOut
     }
 }

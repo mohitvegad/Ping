@@ -2,10 +2,12 @@ import SwiftUI
 
 struct RootTabView: View {
     
+    @ObservedObject var appSession: AppSession
     private let currentUserId: String
 
-    init(currentUserId: String) {
-        self.currentUserId = currentUserId
+    init(currentUserId: String, appSession: AppSession) {
+         self.currentUserId = currentUserId
+         self.appSession = appSession
 
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
@@ -40,7 +42,7 @@ struct RootTabView: View {
                 
                 // PING UPDATE VIEW TAB
                 NavigationStack {
-                    SettingsView()
+                    SettingsView(appSession: appSession)
                 }
                 .tabItem {
                     Label("Setting", systemImage: "gearshape.fill")

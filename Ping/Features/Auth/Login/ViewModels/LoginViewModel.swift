@@ -15,13 +15,13 @@ final class LoginViewModel: ObservableObject {
     @Published var password = kEmptyString
     @Published var state: LoginViewState = .idle
     
-    private let appConfig: AppConfiguration
+    private let appSession: AppSession
     private let repository: AuthRepositoryProtocol
     private let userSession: CurrentUserSessionProtocol
     private let userStore: UserStoreProtocol
     
-    init(appConfig: AppConfiguration, repository: AuthRepositoryProtocol, userSession: CurrentUserSessionProtocol, userStore: UserStoreProtocol) {
-        self.appConfig = appConfig
+    init(appSession: AppSession, repository: AuthRepositoryProtocol, userSession: CurrentUserSessionProtocol, userStore: UserStoreProtocol) {
+        self.appSession = appSession
         self.repository = repository
         self.userSession = userSession
         self.userStore = userStore
@@ -50,7 +50,7 @@ final class LoginViewModel: ObservableObject {
                     guard let self = self else { return }
                     
                     self.state = .authenticated
-                    self.appConfig.loginSuccess(uid: uid)
+                    self.appSession.loginSuccess(uid: uid)
                     
                     if let currentUser = result.currentUser {
                         self.userSession.setUser(currentUser)
