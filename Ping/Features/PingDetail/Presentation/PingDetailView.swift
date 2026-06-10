@@ -207,14 +207,14 @@ struct MessageBubble: View {
                 .font(.caption2)
                 .foregroundStyle(.gray)
         case .delivered:
-            HStack(spacing: -6) {
+            HStack(spacing: -8) {
                 Image(systemName: "checkmark")
                 Image(systemName: "checkmark")
             }
             .font(.caption2)
             .foregroundStyle(.gray)
         case .seen:
-            HStack(spacing: -4) {
+            HStack(spacing: -8) {
                 Image(systemName: "checkmark")
                 Image(systemName: "checkmark")
             }
