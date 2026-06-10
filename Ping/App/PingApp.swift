@@ -4,7 +4,7 @@ import FirebaseCore
 @main
 struct PingApp: App {
     
-    @StateObject private var appState: AppState
+    @StateObject private var appConfig: AppConfiguration
     
     // MARK: - INIT
     
@@ -17,15 +17,15 @@ struct PingApp: App {
         let userSession = CurrentUserSession.shared
         let userStore = UserStore.shared
         
-        _appState = StateObject(wrappedValue: AppState(repository: authRepository, keyChain: keyChainService, userSession: userSession, userStore: userStore))
+        _appConfig = StateObject(wrappedValue: AppConfiguration(repository: authRepository, keyChain: keyChainService, userSession: userSession, userStore: userStore))
     }
     
     var body: some Scene {
         WindowGroup {
-            RootView(appState: appState)
-                .environmentObject(appState)
+            RootView(appConfig: appConfig)
+                .environmentObject(appConfig)
                 .onAppear {
-                    appState.start()
+                    appConfig.start()
                 }
         }
     }

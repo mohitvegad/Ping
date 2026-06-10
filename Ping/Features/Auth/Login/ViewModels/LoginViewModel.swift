@@ -3,9 +3,9 @@ import Combine
 
 enum LoginViewState: Equatable {
     case idle
-    case loading
-    case success(String)
-    case error(String)
+    case authenticating
+    case authenticated
+    case unauthenticated(String)
 }
 
 @MainActor
@@ -15,12 +15,11 @@ final class LoginViewModel: ObservableObject {
     @Published var password = kEmptyString
     @Published var state: LoginViewState = .idle
     
-    private let appState: AppState
-    
+    private let appConfig: AppConfiguration
     private let repository: AuthRepositoryProtocol
     
-    init(appState: AppState, repository: AuthRepositoryProtocol) {
-        self.appState = appState
+    init(appConfig: AppConfiguration, repository: AuthRepositoryProtocol) {
+        self.appConfig = appConfig
         self.repository = repository
     }
     
@@ -30,11 +29,11 @@ final class LoginViewModel: ObservableObject {
         let password = password.trimmingCharacters(in: .whitespacesAndNewlines)
         
         guard !email.isEmpty, !password.isEmpty else {
-            state = .error("Please fill all fields")
+            state = .unauthenticated("Please fill all fields")
             return
         }
         
-        state = .loading
+        state = .authenticating
         
         repository.login(email: email, password: password) { [weak self] result in
             
@@ -48,20 +47,20 @@ final class LoginViewModel: ObservableObject {
                     
                     switch result {
                         
-                    case .success(_):
-                        self.appState.loginSuccess(uid: uid)
-                        self.state = .success(uid)
+                    case .success(let user):
+                        self.appConfig.loginSuccess(uid: uid)
+                        self.state = .authenticated
                         
                     case .failure(let error):
                         
-                        self.state = .error(error.localizedDescription)
+                        self.state = .unauthenticated(error.localizedDescription)
                         
                     }
                 }
                 
             case .failure(let error):
                 
-                self.state = .error(error.localizedDescription)
+                self.state = .unauthenticated(error.localizedDescription)
                 
             }
         }

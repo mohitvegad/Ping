@@ -11,7 +11,7 @@ final class LoginViewModelTests: XCTestCase {
         let session = MockUserSession()
         let store = MockUserStore()
 
-        let appState = AppState(
+        let appConfig = AppConfiguration(
             repository: repository,
             keyChain: keychain,
             userSession: session,
@@ -19,7 +19,7 @@ final class LoginViewModelTests: XCTestCase {
         )
 
         let sut = LoginViewModel(
-            appState: appState,
+            appConfig: appConfig,
             repository: repository
         )
 
@@ -32,14 +32,14 @@ final class LoginViewModelTests: XCTestCase {
         // Arrange
         let (sut, _) = makeSUT()
 
-        sut.email = ""
-        sut.password = ""
+        sut.email = kEmptyString
+        sut.password = kEmptyString
         
         // Act
         sut.login()
         
         // Assert
-        XCTAssertEqual(sut.state, .error("Please fill all fields"))
+        XCTAssertEqual(sut.state, .unauthenticated("Please fill all fields"))
     }
     
     //MARK: - Test Login Success
@@ -66,7 +66,8 @@ final class LoginViewModelTests: XCTestCase {
         sut.login()
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            XCTAssertEqual(sut.state, .success("123"))
+            // Assert
+            XCTAssertEqual(sut.state, .authenticated)
             expectation.fulfill()
         }
 

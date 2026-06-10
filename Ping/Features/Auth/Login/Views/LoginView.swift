@@ -4,14 +4,14 @@ struct LoginView: View {
     
     @StateObject private var viewModel: LoginViewModel
     
-    var appState: AppState
+    var appConfig: AppConfiguration
     
-    init(appState: AppState) {
-        self.appState = appState
+    init(appConfig: AppConfiguration) {
+        self.appConfig = appConfig
         let service = FirebaseAuthService()
         let repo = AuthRepository(authService: service)
         
-        _viewModel = StateObject(wrappedValue: LoginViewModel(appState: appState, repository: repo))
+        _viewModel = StateObject(wrappedValue: LoginViewModel(appConfig: appConfig, repository: repo))
     }
     
     var body: some View {
@@ -44,21 +44,20 @@ struct LoginView: View {
                 .padding(.horizontal)
             
             // MARK: - STATE UI
-            
             switch viewModel.state {
                 
             case .idle:
                 EmptyView()
                 
-            case .loading:
+            case .authenticating:
                 ProgressView()
                     .tint(.white)
                 
-            case .success(_):
+            case .authenticated:
                 Text("Login Success")
                     .foregroundColor(.green)
                 
-            case .error(let message):
+            case .unauthenticated(let message):
                 Text(message)
                     .foregroundColor(.red)
                     .font(.caption)
@@ -78,7 +77,7 @@ struct LoginView: View {
             .foregroundColor(.white)
             .cornerRadius(12)
             .padding(.horizontal)
-            .disabled(viewModel.state == .loading ||
+            .disabled(viewModel.state == .authenticating ||
                       viewModel.email.isEmpty ||
                       viewModel.password.isEmpty)
             

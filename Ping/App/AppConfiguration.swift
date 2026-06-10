@@ -1,16 +1,17 @@
 import Foundation
 import Combine
 
+enum AppConfigurationState {
+    case idle
+    case loggedIn(String)
+    case loggedOut
+}
+
+
 @MainActor
-final class AppState: ObservableObject {
+final class AppConfiguration: ObservableObject {
     
-    enum State {
-        case idle
-        case loggedIn(String)
-        case loggedOut
-    }
-    
-    @Published var state: State = .idle
+    @Published var state: AppConfigurationState = .idle
     
     private let repository: AuthRepositoryProtocol
     private let keychain: KeychainServiceProtocol
@@ -27,10 +28,7 @@ final class AppState: ObservableObject {
     }
     
     func start() {
-        guard let uid = keychain.get("userId") else {
-            state = .loggedOut
-            return
-        }
+        guard let uid = keychain.get("userId") else { state = .loggedOut; return }
         
         repository.getCurrentUser(uid: uid) { [weak self] result in
             guard let self else { return }

@@ -2,17 +2,17 @@ import SwiftUI
 
 struct RootView: View {
 
-    @ObservedObject var appState: AppState 
+    @ObservedObject var appConfig: AppConfiguration
 
     var body: some View {
 
-        switch appState.state {
+        switch appConfig.state {
 
         case .idle:
             ProgressView()
 
         case .loggedOut:
-            LoginView(appState: appState) 
+            LoginView(appConfig: appConfig) 
 
         case .loggedIn(let uid):
             RootTabView(currentUserId: uid)
