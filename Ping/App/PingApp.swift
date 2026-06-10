@@ -13,8 +13,11 @@ struct PingApp: App {
         
         let authService = FirebaseAuthService()
         let authRepository = AuthRepository(authService: authService)
+        let keyChainService = KeychainManager.shared
+        let userSession = CurrentUserSession.shared
+        let userStore = UserStore.shared
         
-        _appState = StateObject(wrappedValue: AppState(repository: authRepository))
+        _appState = StateObject(wrappedValue: AppState(repository: authRepository, keyChain: keyChainService, userSession: userSession, userStore: userStore))
     }
     
     var body: some Scene {

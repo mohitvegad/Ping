@@ -1,4 +1,10 @@
-final class CurrentUserSession {
+protocol CurrentUserSessionProtocol {
+    func setUserId(_ id: String)
+    func setUser(_ user: UserModel)
+    func clear()
+}
+
+final class CurrentUserSession: CurrentUserSessionProtocol {
 
     static let shared = CurrentUserSession()
     private init() {}

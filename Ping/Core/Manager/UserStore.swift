@@ -1,8 +1,14 @@
 import Foundation
 import Combine
 
+protocol UserStoreProtocol {
+    func setUsers(_ users: [UserModel])
+    func user(id: String) -> UserModel?
+    func clear()
+}
+
 @MainActor
-final class UserStore: ObservableObject {
+final class UserStore: UserStoreProtocol, ObservableObject {
 
     static let shared = UserStore()
 

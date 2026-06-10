@@ -14,7 +14,7 @@ enum AuthError: LocalizedError {
     }
 }
 
-protocol AuthServiceProtocol {
+protocol FirebaseAuthServiceProtocol {
 
     func getCurrentUser(uid: String, completion: @escaping (Result<UserModel, Error>) -> Void)
     

@@ -12,13 +12,18 @@ final class AppState: ObservableObject {
     
     @Published var state: State = .idle
     
-    private let keychain = KeychainManager.shared
     private let repository: AuthRepositoryProtocol
+    private let keychain: KeychainServiceProtocol
+    private let userSession: CurrentUserSessionProtocol
+    private let userStore: UserStoreProtocol
     
     
     // MARK: - INIT
-    init(repository: AuthRepositoryProtocol) {
+    init(repository: AuthRepositoryProtocol, keyChain: KeychainServiceProtocol, userSession: CurrentUserSessionProtocol, userStore: UserStoreProtocol) {
         self.repository = repository
+        self.keychain = keyChain
+        self.userSession = userSession
+        self.userStore = userStore
     }
     
     func start() {
@@ -29,34 +34,30 @@ final class AppState: ObservableObject {
         
         repository.getCurrentUser(uid: uid) { [weak self] result in
             guard let self else { return }
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let user):
-                    CurrentUserSession.shared.setUser(user)
-                    self.state = .loggedIn(uid)
-                case .failure:
-                    self.logout()
-                }
+            switch result {
+            case .success(let user):
+                userSession.setUser(user)
+                self.state = .loggedIn(uid)
+            case .failure:
+                self.logout()
             }
         }
         
         repository.fetchUsers(uid: uid) { [weak self] users in
-            guard let _ = self else { return }
-            DispatchQueue.main.async {
-                UserStore.shared.setUsers(users)
-            }
+            guard let self = self else { return }
+            userStore.setUsers(users)
         }
     }
     
     func loginSuccess(uid: String) {
         keychain.save(uid, key: "userId")
-        CurrentUserSession.shared.setUserId(uid)
+        userSession.setUserId(uid)
         state = .loggedIn(uid)
     }
     
     func logout() {
         keychain.delete("userId")
-        CurrentUserSession.shared.clear()
+        userSession.clear()
         state = .loggedOut
     }
 }

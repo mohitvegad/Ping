@@ -11,10 +11,10 @@ enum LoginViewState: Equatable {
 @MainActor
 final class LoginViewModel: ObservableObject {
     
-    @Published var email = ""
-    @Published var password = ""
-    
+    @Published var email = kEmptyString
+    @Published var password = kEmptyString
     @Published var state: LoginViewState = .idle
+    
     private let appState: AppState
     
     private let repository: AuthRepositoryProtocol
@@ -37,36 +37,32 @@ final class LoginViewModel: ObservableObject {
         state = .loading
         
         repository.login(email: email, password: password) { [weak self] result in
-
+            
             guard let self else { return }
-
+            
             switch result {
-
+                
             case .success(let uid):
-
+                
                 self.repository.getCurrentUser(uid: uid) { result in
-
+                    
                     switch result {
-
-                    case .success(let user):
-                        DispatchQueue.main.async {
-                            self.appState.loginSuccess(uid: uid)
-                            self.state = .success(uid)
-                        }
-
+                        
+                    case .success(_):
+                        self.appState.loginSuccess(uid: uid)
+                        self.state = .success(uid)
+                        
                     case .failure(let error):
-
-                        DispatchQueue.main.async {
-                            self.state = .error(error.localizedDescription)
-                        }
+                        
+                        self.state = .error(error.localizedDescription)
+                        
                     }
                 }
-
+                
             case .failure(let error):
-
-                DispatchQueue.main.async {
-                    self.state = .error(error.localizedDescription)
-                }
+                
+                self.state = .error(error.localizedDescription)
+                
             }
         }
     }

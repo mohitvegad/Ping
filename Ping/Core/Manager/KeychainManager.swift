@@ -1,7 +1,13 @@
 import Security
 import Foundation
 
-final class KeychainManager {
+protocol KeychainServiceProtocol {
+    func get(_ key: String) -> String?
+    func save(_ value: String, key: String)
+    func delete(_ key: String)
+}
+
+final class KeychainManager: KeychainServiceProtocol {
 
     static let shared = KeychainManager()
     private init() {}

@@ -2,28 +2,16 @@ import Foundation
 
 final class AuthRepository: AuthRepositoryProtocol {
 
-    private let authService: AuthServiceProtocol
+    private let authService: FirebaseAuthServiceProtocol
 
-    init(authService: AuthServiceProtocol) {
+    init(authService: FirebaseAuthServiceProtocol) {
         self.authService = authService
     }
 
     // MARK: - AUTHENTICATION
     
     func login(email: String, password: String, completion: @escaping (Result<String, Error>) -> Void) {
-
-        authService.login(email: email, password: password) { result in
-
-            switch result {
-
-            case .success(let uid):
-                print("LOGIN SUCCESS:", uid)
-                completion(.success(uid))
-
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
+        authService.login(email: email, password: password, completion: completion)
     }
 
     // MARK: - FETCH USER

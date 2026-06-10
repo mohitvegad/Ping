@@ -2,7 +2,7 @@ import FirebaseAuth
 import FirebaseFirestore
 
 
-final class FirebaseAuthService: AuthServiceProtocol {
+final class FirebaseAuthService: FirebaseAuthServiceProtocol {
     
     private let db = Firestore.firestore()
 
