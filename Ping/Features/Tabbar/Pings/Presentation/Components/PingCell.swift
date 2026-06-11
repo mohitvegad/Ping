@@ -74,8 +74,8 @@ private extension  PingCell {
                     
                     Spacer()
                     
-                    if configuration.showsUnreadCount {
-                        Text("1")
+                    if configuration.showsUnreadCount && model.unreadCount > 0 {
+                        Text("\(model.unreadCount)")
                             .font(.caption2.bold())
                             .foregroundStyle(.black)
                             .padding(6)

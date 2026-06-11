@@ -20,8 +20,8 @@ final class ChatRepository: ChatRepositoryProtocol {
         service.fetchMessages(currentUser: currentUser, otherUser: otherUser, completion: completion)
     }
     
-    func markDelivered(currentUser: UserModel, otherUser: UserModel) {
-        service.markDelivered(currentUser: currentUser, otherUser: otherUser)
+    func markMessagesAsSeen(currentUser: UserModel, otherUser: UserModel) {
+        service.markMessagesAsSeen(currentUser: currentUser, otherUser: otherUser)
     }
 
     

@@ -4,9 +4,9 @@ import FirebaseFirestore
 struct ChatModel: Identifiable, Codable, Hashable {
     @DocumentID var id: String?
     let participants: [String]
+    let unreadCount: [String: Int]
     let lastMessage: String
     let updatedAt: Date
-    
 }
 
 extension ChatModel {
@@ -16,9 +16,10 @@ extension ChatModel {
 
         return PingCellModel(
             id: otherUser?.id ?? "",
+            imageName: "person.fill",
             title: "\(otherUser?.firstName ?? "") \(otherUser?.lastName ?? "")",
             subtitle: lastMessage,
-            imageName: "person.fill",
+            unreadCount: unreadCount[CurrentUserSession.shared.userId ?? ""] ?? 0,
             date: updatedAt
         )
     }

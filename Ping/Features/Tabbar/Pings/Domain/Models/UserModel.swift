@@ -13,9 +13,10 @@ extension UserModel {
     func toPingCellModel() -> PingCellModel {
         PingCellModel(
             id: id ?? "",
+            imageName: "person.fill",
             title: "\(firstName) \(lastName)",
             subtitle: pingStatus ?? "",
-            imageName: "person.fill",
+            unreadCount: 0,
             date: Date()
         )
     }

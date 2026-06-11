@@ -51,18 +51,25 @@ final class ChatService: ChatServiceProtocol {
                 let chatData: [String: Any] = [
                     "id": chatId,
                     "participants": [currentUser.id ?? "", otherUser.id ?? ""],
+                    "unreadCount": [
+                        currentUser.id ?? "": 0,
+                        otherUser.id ?? "": 1
+                    ],
                     "lastMessage": text,
                     "updatedAt": FieldValue.serverTimestamp()
                 ]
                 
                 chatRef.setData(chatData)
+            } else {
+                guard let otherUserId = otherUser.id else { return }
+                
+                // 2 UPDATE CHAT
+                chatRef.updateData([
+                    "lastMessage": text,
+                    "updatedAt": FieldValue.serverTimestamp(),
+                    "unreadCount.\(otherUserId)": FieldValue.increment(Int64(1))
+                ])
             }
-            
-            // 2. UPDATE CHAT
-            chatRef.updateData([
-                "lastMessage": text,
-                "updatedAt": FieldValue.serverTimestamp()
-            ])
             
             // SEND MESSAGE
             let messageRef = chatRef.collection("messages").document()
@@ -84,7 +91,6 @@ final class ChatService: ChatServiceProtocol {
             }
         }
     }
-    
     
     
     func fetchMessages(currentUser: UserModel, otherUser: UserModel, completion: @escaping ([MessageModel]) -> Void) {
@@ -110,7 +116,7 @@ final class ChatService: ChatServiceProtocol {
             }
     }
     
-    func markDelivered(currentUser: UserModel, otherUser: UserModel) {
+    func markMessagesAsSeen(currentUser: UserModel, otherUser: UserModel) {
         
         let chatId: String = createChatId(currentUser: currentUser, otherUser: otherUser)
         
@@ -139,6 +145,13 @@ final class ChatService: ChatServiceProtocol {
                         forDocument: doc.reference
                     )
                 }
+                
+                // 2. reset unread count
+                let chatRef = self.db.collection("chats").document(chatId)
+
+                batch.updateData([
+                    "unreadCount.\(currentUser.id ?? "")": 0
+                ], forDocument: chatRef)
                 batch.commit()
             }
     }

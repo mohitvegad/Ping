@@ -50,6 +50,6 @@ extension PingDetailViewModel {
     }
     
     func onChatAppear() {
-        repository.markDelivered(currentUser: currentUser, otherUser: otherUser)
+        repository.markMessagesAsSeen(currentUser: currentUser, otherUser: otherUser)
     }
 }
