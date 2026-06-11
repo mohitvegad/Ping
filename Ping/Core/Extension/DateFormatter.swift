@@ -4,7 +4,7 @@ extension Date {
     
     private static let dateFormatter: DateFormatter = {
         let f = DateFormatter()
-        f.dateFormat = "dd MMM yyyy"
+        f.dateFormat = "dd/MM/yyyy"
         return f
     }()
 
@@ -30,5 +30,20 @@ extension Date {
         
     var formattedTime: String {
         Self.timeFormatter.string(from: self)
+    }
+    
+    var smartFormatted: String {
+        
+        let calendar = Calendar.current
+        
+        if calendar.isDateInToday(self) {
+            return formattedTime
+        }
+        
+        if calendar.isDate(self, equalTo: Date(), toGranularity: .weekOfYear) {
+            return dayName
+        }
+        
+        return formattedDate
     }
 }

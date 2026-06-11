@@ -59,7 +59,7 @@ private extension  PingCell {
                     Spacer()
                     
                     if configuration.showsDate {
-                        Text(model.date.formattedTime)
+                        Text(model.date.smartFormatted)
                             .font(.caption)
                             .foregroundStyle(.gray)
                     }
