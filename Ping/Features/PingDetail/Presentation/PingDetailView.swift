@@ -19,7 +19,6 @@ struct PingDetailView: View {
     // INITIALIZATION
     //---------------------------
     
-    
     init(currentUser: UserModel, otherUser: UserModel, repository: ChatRepositoryProtocol) {
         self.currentUser = currentUser
         self.otherUser = otherUser

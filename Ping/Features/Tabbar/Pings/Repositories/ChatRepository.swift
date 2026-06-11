@@ -23,6 +23,10 @@ final class ChatRepository: ChatRepositoryProtocol {
     func markMessagesAsSeen(currentUser: UserModel, otherUser: UserModel) {
         service.markMessagesAsSeen(currentUser: currentUser, otherUser: otherUser)
     }
+    
+    func deleteChatForMe(currentUser: UserModel, otherUser: UserModel) {
+        service.deleteChatForMe(currentUser: currentUser, otherUser: otherUser)
+    }
 
     
 }

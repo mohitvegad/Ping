@@ -25,18 +25,32 @@ struct PingsView: View {
     
     var body: some View {
         NavigationStack(path: $path) {
-            ScrollView {
-                VStack(spacing: 0) {
-                    ForEach(viewModel.chats) { chat in
-                        Button {
+            List {
+                ForEach(viewModel.chats) { chat in
+                    PingCell(model: chat.toPingCellModel(), configuration: .chat)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
                             openChat(chat)
-                        } label: {
-                            PingCell(model: chat.toPingCellModel(), configuration: .chat)
                         }
-                        .buttonStyle(.plain)
-                    }
+                        .listRowInsets(EdgeInsets())
+                        .listRowBackground(Color.black)
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            
+                            Button(role: .destructive) {
+                                guard let currentUser = CurrentUserSession.shared.user else { return }
+                                
+                                let otherUserId = chat.otherUserId(currentUserId: currentUserId)
+                                guard let otherUser = UserStore.shared.user(id: otherUserId) else { return }
+
+                                viewModel.deleteChatForMe(currentUser: currentUser, otherUser: otherUser)
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                            .tint(.red)
+                        }
                 }
             }
+            .listStyle(.plain)
             .navigationTitle("Pings")
             .navigationBarTitleDisplayMode(.inline)
             

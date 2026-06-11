@@ -28,5 +28,9 @@ final class PingsViewViewModel: ObservableObject {
             }
         }
     }
+    
+    func deleteChatForMe(currentUser: UserModel, otherUser: UserModel) {
+        repository.deleteChatForMe(currentUser: currentUser, otherUser: otherUser)
+    }
 }
 

@@ -31,7 +31,12 @@ final class ChatService: ChatServiceProtocol {
                         return nil
                     }
                 }
-                completion(chats)
+                
+                let visibleChats = chats.filter {
+                    !($0.deletedFor?.contains(uid) ?? false)
+                }
+                
+                completion(visibleChats)
             }
     }
     
@@ -55,6 +60,7 @@ final class ChatService: ChatServiceProtocol {
                         currentUser.id ?? "": 0,
                         otherUser.id ?? "": 1
                     ],
+                    "deletedFor": [],
                     "lastMessage": text,
                     "updatedAt": FieldValue.serverTimestamp()
                 ]
@@ -154,6 +160,25 @@ final class ChatService: ChatServiceProtocol {
                 ], forDocument: chatRef)
                 batch.commit()
             }
+    }
+    
+    func deleteChatForMe(currentUser: UserModel, otherUser: UserModel) {
+
+        let chatId: String = createChatId(currentUser: currentUser, otherUser: otherUser)
+
+        let chatRef = db.collection("chats").document(chatId)
+
+        chatRef.updateData([
+            "deletedFor": FieldValue.arrayUnion([currentUser.id ?? kEmptyString]),
+            "updatedAt": FieldValue.serverTimestamp()
+        ]) { error in
+            
+            if let error = error {
+                print("Delete chat error:", error.localizedDescription)
+            } else {
+                print("Chat deleted for \(currentUser.firstName + " " + currentUser.lastName) only")
+            }
+        }
     }
     
     private func createChatId(currentUser: UserModel, otherUser: UserModel) -> String {
