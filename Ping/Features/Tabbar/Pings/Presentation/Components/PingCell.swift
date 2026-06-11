@@ -1,6 +1,5 @@
 import SwiftUI
 
-
 struct PingCell: View {
     
     let model: PingCellModel

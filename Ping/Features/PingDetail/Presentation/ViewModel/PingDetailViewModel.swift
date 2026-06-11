@@ -28,9 +28,9 @@ extension PingDetailViewModel {
     
     func listenMessages() {
         repository.fetchMessages(currentUser: currentUser, otherUser: otherUser) { [weak self] messages in
-            DispatchQueue.main.async {
-                self?.messages = messages
-            }
+            guard let self = self else { return }
+            self.messages = messages
+            self.markAsSeenIfNeeded()
         }
     }
 }
@@ -49,7 +49,7 @@ extension PingDetailViewModel {
         }
     }
     
-    func onChatAppear() {
+    func markAsSeenIfNeeded() {
         repository.markMessagesAsSeen(currentUser: currentUser, otherUser: otherUser)
     }
 }

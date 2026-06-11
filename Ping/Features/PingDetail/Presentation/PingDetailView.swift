@@ -39,9 +39,6 @@ struct PingDetailView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.black)
         .navigationBarBackButtonHidden(true)
-        .onAppear {
-            viewModel.onChatAppear()
-        }
     }
 }
 
