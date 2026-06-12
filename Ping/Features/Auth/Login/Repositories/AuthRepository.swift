@@ -29,19 +29,28 @@ final class AuthRepository: AuthRepositoryProtocol {
         authService.login(email: email, password: password, completion: completion)
     }
 
-    func fetchUsers(uid: String, completion: @escaping (UsersResult) -> Void) {
-        authService.fetchUsers(uid: uid) { users in
-            
-            let currentUser = users.first { $0.id == uid }
-            
-            let otherUsers = users.filter {
-                $0.id != uid
-            }
+    func fetchUsers(uid: String, completion: @escaping (Result<UsersResult, Error>) -> Void) {
 
-            completion(UsersResult(currentUser: currentUser, otherUsers: otherUsers))
+        authService.fetchUsers { result in
+
+            switch result {
+
+            case .success(let users):
+
+                let currentUser = users.first { $0.id == uid }
+
+                let otherUsers = users.filter { $0.id != uid}
+
+                let usersResult = UsersResult(currentUser: currentUser, otherUsers: otherUsers)
+
+                completion(.success(usersResult))
+
+            case .failure(let error):
+
+                completion(.failure(error))
+            }
         }
     }
-    
     func logout() throws {
         try authService.logout()
     }

@@ -59,15 +59,28 @@ final class LoginViewModel: ObservableObject {
                 
             case .success(let uid):
                 repository.fetchUsers(uid: uid) { [weak self] result in
+
                     guard let self = self else { return }
-                    
-                    self.state = .authenticated
-                    self.appSession.loginSuccess(uid: uid)
-                    
-                    if let currentUser = result.currentUser {
+
+                    switch result {
+
+                    case .success(let usersResult):
+
+                        guard let currentUser = usersResult.currentUser else {
+                            self.state = .unauthenticated("User not found")
+                            return
+                        }
+
                         self.userSession.setUser(currentUser)
+                        self.userStore.setUsers(usersResult.otherUsers)
+
+                        self.appSession.loginSuccess(uid: uid)
+                        self.state = .authenticated
+
+                    case .failure(let error):
+
+                        self.state = .unauthenticated(error.localizedDescription)
                     }
-                    self.userStore.setUsers(result.otherUsers)
                 }
             case .failure(let error):
                 

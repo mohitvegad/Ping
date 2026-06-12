@@ -54,6 +54,7 @@ final class FirebaseAuthService: FirebaseAuthServiceProtocol {
         try Auth.auth().signOut()
     }
 
+
     func currentUserId() -> String? {
         Auth.auth().currentUser?.uid
     }
