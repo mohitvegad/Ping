@@ -1,5 +1,9 @@
 import Foundation
 
+//---------------------------
+// Protocol
+//---------------------------
+
 protocol AuthRepositoryProtocol {
 
     func login(email: String, password: String, completion: @escaping (Result<String, Error>) -> Void)

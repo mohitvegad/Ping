@@ -11,6 +11,10 @@ struct PingDetailView: View {
     @State private var isAtBottom: Bool = true
     @State private var scrollTrigger: UUID = UUID()
     
+    //---------------------------
+    // Computed Property
+    //---------------------------
+
     var isTyping: Bool {
         !inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
@@ -26,7 +30,10 @@ struct PingDetailView: View {
         _viewModel = StateObject(wrappedValue: PingDetailViewModel(currentUser: currentUser, otherUser: otherUser, repository: repository))
     }
     
-    // MARK: - BODY
+    //---------------------------
+    // BODY
+    //---------------------------
+
     var body: some View {
         VStack(spacing: 0) {
             
@@ -49,7 +56,7 @@ private extension PingDetailView {
         HStack(spacing: 12) {
             
             Button {
-                dismiss()
+                dismiss()   
             } label: {
                 Image(systemName: "chevron.left")
                     .font(.system(size: 24, weight: .semibold))

@@ -6,7 +6,9 @@ final class FirebaseAuthService: FirebaseAuthServiceProtocol {
     
     private let db = Firestore.firestore()
 
-    // MARK: - LOGIN
+    //---------------------------
+    // Function
+    //---------------------------
 
     func login(email: String, password: String, completion: @escaping (Result<String, Error>) -> Void) {
 
@@ -26,32 +28,31 @@ final class FirebaseAuthService: FirebaseAuthServiceProtocol {
         }
     }
     
-    func fetchUsers(uid: String, completion: @escaping ([UserModel]) -> Void) {
+    func fetchUsers(completion: @escaping (Result<[UserModel], Error>) -> Void) {
         
         db.collection("users")
             .getDocuments { snapshot, error in
                 print("Documents count:", snapshot?.documents.count ?? 0)
-                snapshot?.documents.forEach {
-                    print($0.data())
+                if let error = error {
+                    completion(.failure(error))
+                    return
                 }
+                snapshot?.documents.forEach { print($0.data()) }
+                
                 let users = snapshot?.documents.compactMap {
                     try? $0.data(as: UserModel.self)
                 } ?? []
                 
                 print("Decoded users:", users.count)
                 
-                completion(users)
+                completion(.success(users))
             }
     }
 
 
-    // MARK: - LOGOUT
-
     func logout() throws {
         try Auth.auth().signOut()
     }
-
-    // MARK: - CURRENT USER
 
     func currentUserId() -> String? {
         Auth.auth().currentUser?.uid

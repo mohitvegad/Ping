@@ -1,6 +1,10 @@
 import Foundation
 import Combine
 
+//---------------------------
+// AppSession Enum
+//---------------------------
+
 enum AppSessionState {
     case idle
     case loggedIn(uId: String)
@@ -18,7 +22,10 @@ final class AppSession: ObservableObject {
     private let userStore: UserStoreProtocol
     
     
-    // MARK: - INIT
+    //---------------------------
+    // INITIALIZATION
+    //---------------------------
+
     init(repository: AuthRepositoryProtocol, keyChain: KeychainServiceProtocol, userSession: CurrentUserSessionProtocol, userStore: UserStoreProtocol) {
         self.repository = repository
         self.keychain = keyChain
@@ -26,6 +33,10 @@ final class AppSession: ObservableObject {
         self.userStore = userStore
     }
     
+    //---------------------------
+    // Function
+    //---------------------------
+
     func start() {
         guard let uid = keychain.get("userId") else { state = .loggedOut; return }
         

@@ -1,6 +1,10 @@
 import Security
 import Foundation
 
+//---------------------------
+// Protocol
+//---------------------------
+
 protocol KeychainServiceProtocol {
     func get(_ key: String) -> String?
     func save(_ value: String, key: String)
@@ -10,8 +14,17 @@ protocol KeychainServiceProtocol {
 final class KeychainManager: KeychainServiceProtocol {
 
     static let shared = KeychainManager()
+    
+    //---------------------------
+    // INITIALIZATION
+    //---------------------------
+
     private init() {}
 
+    //---------------------------
+    // Functions
+    //---------------------------
+    
     func save(_ value: String, key: String) {
 
         let data = Data(value.utf8)
@@ -19,7 +32,8 @@ final class KeychainManager: KeychainServiceProtocol {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrAccount as String: key,
-            kSecValueData as String: data
+            kSecValueData as String: data,
+            kSecAttrAccessible as String: kSecAttrAccessibleWhenUnlockedThisDeviceOnly
         ]
 
         SecItemDelete(query as CFDictionary)

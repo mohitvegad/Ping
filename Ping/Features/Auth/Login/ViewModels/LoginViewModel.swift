@@ -1,6 +1,10 @@
 import Foundation
 import Combine
 
+//---------------------------
+// Enum Login State
+//---------------------------
+
 enum LoginViewState: Equatable {
     case idle
     case authenticating
@@ -20,6 +24,10 @@ final class LoginViewModel: ObservableObject {
     private let userSession: CurrentUserSessionProtocol
     private let userStore: UserStoreProtocol
     
+    //---------------------------
+    // INITIALIZATION
+    //---------------------------
+    
     init(appSession: AppSession, repository: AuthRepositoryProtocol, userSession: CurrentUserSessionProtocol, userStore: UserStoreProtocol) {
         self.appSession = appSession
         self.repository = repository
@@ -27,6 +35,10 @@ final class LoginViewModel: ObservableObject {
         self.userStore = userStore
     }
     
+    //---------------------------
+    // Function
+    //---------------------------
+
     func login() {
         
         let email = email.trimmingCharacters(in: .whitespacesAndNewlines)

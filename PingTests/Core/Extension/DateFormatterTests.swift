@@ -27,7 +27,7 @@ final class DateFormatterTests: XCTestCase {
         let result = date?.formattedDate
         
         //ASSERT
-        XCTAssertEqual(result, "01 Jan 2026")
+        XCTAssertEqual(result, "01/01/2026")
     }
     
     func testDayNameReturnsExpectedValue() {

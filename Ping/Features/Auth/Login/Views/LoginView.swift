@@ -6,6 +6,10 @@ struct LoginView: View {
     
     var appSession: AppSession
     
+    //---------------------------
+    // INITIALIZATION
+    //---------------------------
+    
     init(appSession: AppSession) {
         self.appSession = appSession
         let service = FirebaseAuthService()
@@ -20,6 +24,10 @@ struct LoginView: View {
         )
     }
     
+    //---------------------------
+    // Body
+    //---------------------------
+
     var body: some View {
         
         VStack(spacing: 20) {
@@ -91,8 +99,4 @@ struct LoginView: View {
         }
         .background(Color.black.ignoresSafeArea())
     }
-}
-
-#Preview {
-    //    LoginView()
 }

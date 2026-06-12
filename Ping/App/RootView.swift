@@ -4,6 +4,10 @@ struct RootView: View {
 
     @ObservedObject var appSession: AppSession
 
+    //---------------------------
+    // Body
+    //---------------------------
+    
     var body: some View {
 
         switch appSession.state {

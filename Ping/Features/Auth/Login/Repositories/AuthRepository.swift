@@ -1,5 +1,9 @@
 import Foundation
 
+//---------------------------
+// Struct
+//---------------------------
+
 struct UsersResult {
     let currentUser: UserModel?
     let otherUsers: [UserModel]
@@ -9,17 +13,21 @@ final class AuthRepository: AuthRepositoryProtocol {
 
     private let authService: FirebaseAuthServiceProtocol
 
+    //---------------------------
+    // INITIALIZATION
+    //---------------------------
+
     init(authService: FirebaseAuthServiceProtocol) {
         self.authService = authService
     }
 
-    // MARK: - AUTHENTICATION
-    
+    //---------------------------
+    // Functions
+    //---------------------------
+
     func login(email: String, password: String, completion: @escaping (Result<String, Error>) -> Void) {
         authService.login(email: email, password: password, completion: completion)
     }
-
-    // MARK: - FETCH USER
 
     func fetchUsers(uid: String, completion: @escaping (UsersResult) -> Void) {
         authService.fetchUsers(uid: uid) { users in
@@ -33,8 +41,6 @@ final class AuthRepository: AuthRepositoryProtocol {
             completion(UsersResult(currentUser: currentUser, otherUsers: otherUsers))
         }
     }
-    
-    // MARK: - LOGOUT
     
     func logout() throws {
         try authService.logout()

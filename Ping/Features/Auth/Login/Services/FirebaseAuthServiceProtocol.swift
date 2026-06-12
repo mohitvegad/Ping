@@ -1,5 +1,9 @@
 import Foundation
 
+//---------------------------
+// Enum
+//---------------------------
+
 enum AuthError: LocalizedError {
 
     case userNotFound
@@ -7,16 +11,19 @@ enum AuthError: LocalizedError {
     var errorDescription: String? {
 
         switch self {
-
         case .userNotFound:
             return "User not found"
         }
     }
 }
 
+//---------------------------
+// Protocol
+//---------------------------
+
 protocol FirebaseAuthServiceProtocol {
     
-    func fetchUsers(uid: String, completion: @escaping ([UserModel]) -> Void)
+    func fetchUsers(completion: @escaping (Result<[UserModel], Error>) -> Void)
 
     func login(email: String, password: String, completion: @escaping (Result<String, Error>) -> Void)
 

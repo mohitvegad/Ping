@@ -7,14 +7,20 @@ protocol CurrentUserSessionProtocol {
 final class CurrentUserSession: CurrentUserSessionProtocol {
 
     static let shared = CurrentUserSession()
-    private init() {}
-
-    // MARK: - Stored in memory
+    
     private(set) var userId: String?
-
     private(set) var user: UserModel?
 
-    // MARK: - SET SESSION
+    //---------------------------
+    // INITIALIZATION
+    //---------------------------
+
+    private init() {}
+
+    //---------------------------
+    // Functions
+    //---------------------------
+    
     func setUserId(_ id: String) {
         self.userId = id
     }
@@ -24,7 +30,6 @@ final class CurrentUserSession: CurrentUserSessionProtocol {
         self.userId = user.id
     }
 
-    // MARK: - CLEAR SESSION
     func clear() {
         userId = nil
         user = nil

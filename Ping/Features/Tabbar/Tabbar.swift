@@ -8,15 +8,6 @@ struct RootTabView: View {
     init(currentUserId: String, appSession: AppSession) {
          self.currentUserId = currentUserId
          self.appSession = appSession
-
-        let appearance = UITabBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = UIColor(Color.black)
-        UITabBar.appearance().standardAppearance = appearance
-        if #available(iOS 15.0, *) {
-            UITabBar.appearance().scrollEdgeAppearance = appearance
-        }
-        UITabBar.appearance().unselectedItemTintColor = UIColor(Color.gray)
     }
     
     var body: some View {

@@ -1,6 +1,10 @@
 import Foundation
 import Combine
 
+//---------------------------
+// Protocol
+//---------------------------
+
 protocol UserStoreProtocol {
     func setUsers(_ users: [UserModel])
     func user(id: String) -> UserModel?
@@ -14,16 +18,24 @@ final class UserStore: UserStoreProtocol, ObservableObject {
 
     @Published private(set) var usersById: [String: UserModel] = [:]
 
+    //---------------------------
+    // INITIALIZATION
+    //---------------------------
+
     private init() {}
 
-    // MARK: - ALL USERS
+    //---------------------------
+    // Computed Property
+    //---------------------------
     
     var allUsers: [UserModel] {
         Array(usersById.values)
     }
 
+    //---------------------------
+    // Functions
+    //---------------------------
     
-    // MARK: - SET USERS
     func setUsers(_ users: [UserModel]) {
         var dict: [String: UserModel] = [:]
         users.forEach { user in
@@ -35,12 +47,10 @@ final class UserStore: UserStoreProtocol, ObservableObject {
         self.usersById = dict
     }
 
-    // MARK: - GET USER
     func user(id: String) -> UserModel? {
         usersById[id]
     }
 
-    // MARK: - CLEAR
     func clear() {
         usersById.removeAll()
     }

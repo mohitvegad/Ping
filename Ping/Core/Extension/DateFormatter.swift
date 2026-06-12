@@ -2,6 +2,10 @@ import Foundation
 
 extension Date {
     
+    //---------------------------
+    // Date Formater
+    //---------------------------
+    
     private static let dateFormatter: DateFormatter = {
         let f = DateFormatter()
         f.dateFormat = "dd/MM/yyyy"
@@ -20,6 +24,10 @@ extension Date {
         return f
     }()
     
+    //---------------------------
+    // Computed Property
+    //---------------------------
+    
     var formattedDate: String {
         Self.dateFormatter.string(from: self)
     }
@@ -31,6 +39,10 @@ extension Date {
     var formattedTime: String {
         Self.timeFormatter.string(from: self)
     }
+    
+    //---------------------------
+    // Smart Formater
+    //---------------------------
     
     var smartFormatted: String {
         
