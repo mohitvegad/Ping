@@ -27,7 +27,7 @@ struct PingsView: View {
         NavigationStack(path: $path) {
             List {
                 ForEach(viewModel.chats) { chat in
-                    PingCell(model: chat.toPingCellModel(), configuration: .chat)
+                    PingCell(model: viewModel.makeCellModel(from: chat, currentUserId: currentUserId), configuration: .chat)
                         .contentShape(Rectangle())
                         .onTapGesture {
                             openChat(chat)

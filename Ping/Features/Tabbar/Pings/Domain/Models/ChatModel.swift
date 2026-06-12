@@ -4,32 +4,13 @@ import FirebaseFirestore
 struct ChatModel: Identifiable, Codable, Hashable {
     @DocumentID var id: String?
     let participants: [String]
-    let unreadCount: [String: Int]
     let deletedFor: [String]?
     let lastMessage: String
     let updatedAt: Date
 }
 
 extension ChatModel {
-    func toPingCellModel() -> PingCellModel {
-        let otherUserId = otherUserId(currentUserId: CurrentUserSession.shared.userId ?? "")
-        let otherUser = UserStore.shared.user(id: otherUserId)
-
-        return PingCellModel(
-            id: otherUser?.id ?? "",
-            imageName: "person.fill",
-            title: "\(otherUser?.firstName ?? "") \(otherUser?.lastName ?? "")",
-            subtitle: lastMessage,
-            unreadCount: unreadCount[CurrentUserSession.shared.userId ?? ""] ?? 0,
-            date: updatedAt
-        )
-    }
-}
-
-
-extension ChatModel {
     func otherUserId(currentUserId: String) -> String {
         participants.first { $0 != currentUserId } ?? ""
     }
-
 }

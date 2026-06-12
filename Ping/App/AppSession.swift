@@ -41,12 +41,21 @@ final class AppSession: ObservableObject {
         guard let uid = keychain.get("userId") else { state = .loggedOut; return }
         
         repository.fetchUsers(uid: uid) { [weak self] result in
+
             guard let self = self else { return }
-            self.state = .loggedIn(uId: uid)
-            if let currentUser = result.currentUser {
-                self.userSession.setUser(currentUser)
+
+            switch result {
+
+            case .success(let usersResult):
+
+                if let currentUser = usersResult.currentUser {
+                    self.userSession.setUser(currentUser)
+                }
+                self.userStore.setUsers(usersResult.otherUsers)
+                self.state = .loggedIn(uId: uid)
+            case .failure(let error):
+                return
             }
-            self.userStore.setUsers(result.otherUsers)
         }
     }
     

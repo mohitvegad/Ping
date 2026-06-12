@@ -24,4 +24,16 @@ final class UsersViewModel: ObservableObject {
             return username.localizedCaseInsensitiveContains(searchText)
         }
     }
+    
+    func makeCellModel(from user: UserModel) -> PingCellModel {
+
+        PingCellModel(
+            id: user.id ?? "",
+            imageName: "person.fill",
+            title: "\(user.firstName) \(user.lastName)",
+            subtitle: user.pingStatus ?? "",
+            unreadCount: 0,
+            date: Date()
+        )
+    }
 }

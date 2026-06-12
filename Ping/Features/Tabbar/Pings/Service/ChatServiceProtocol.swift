@@ -11,4 +11,6 @@ protocol ChatServiceProtocol {
     func markMessagesAsSeen(currentUser: UserModel, otherUser: UserModel)
     
     func deleteChatForMe(currentUser: UserModel, otherUser: UserModel)
+    
+    func markChatAsRead(currentUser: UserModel, otherUser: UserModel)
 }

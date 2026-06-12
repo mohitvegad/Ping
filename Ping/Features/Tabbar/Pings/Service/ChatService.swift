@@ -44,40 +44,26 @@ final class ChatService: ChatServiceProtocol {
     
     func sendMessage(text: String, currentUser: UserModel, otherUser: UserModel, completion: @escaping (Result<Void, Error>) -> Void) {
         
-        let chatId: String = createChatId(currentUser: currentUser, otherUser: otherUser)
-        
+        let chatId = createChatId(currentUser: currentUser, otherUser: otherUser)
         let chatRef = db.collection("chats").document(chatId)
         
         chatRef.getDocument { snapshot, error in
             
             if snapshot?.exists == false {
-                
-                // CREATE CHAT ONLY ONCE
-                let chatData: [String: Any] = [
+                chatRef.setData([
                     "id": chatId,
                     "participants": [currentUser.id ?? "", otherUser.id ?? ""],
-                    "unreadCount": [
-                        currentUser.id ?? "": 0,
-                        otherUser.id ?? "": 1
-                    ],
                     "deletedFor": [],
                     "lastMessage": text,
                     "updatedAt": FieldValue.serverTimestamp()
-                ]
-                
-                chatRef.setData(chatData)
+                ])
             } else {
-                guard let otherUserId = otherUser.id else { return }
-                
-                // 2 UPDATE CHAT
                 chatRef.updateData([
                     "lastMessage": text,
-                    "updatedAt": FieldValue.serverTimestamp(),
-                    "unreadCount.\(otherUserId)": FieldValue.increment(Int64(1))
+                    "updatedAt": FieldValue.serverTimestamp()
                 ])
             }
             
-            // SEND MESSAGE
             let messageRef = chatRef.collection("messages").document()
             
             let message = MessageModel(
@@ -87,14 +73,9 @@ final class ChatService: ChatServiceProtocol {
                 timestamp: Date(),
                 status: .sent
             )
-            Task { @MainActor in
-                do {
-                    try messageRef.setData(from: message)
-                    completion(.success(()))
-                } catch {
-                    completion(.failure(error))
-                }
-            }
+            
+            try? messageRef.setData(from: message)
+            completion(.success(()))
         }
     }
     
@@ -151,15 +132,22 @@ final class ChatService: ChatServiceProtocol {
                         forDocument: doc.reference
                     )
                 }
-                
-                // 2. reset unread count
-                let chatRef = self.db.collection("chats").document(chatId)
-
-                batch.updateData([
-                    "unreadCount.\(currentUser.id ?? "")": 0
-                ], forDocument: chatRef)
                 batch.commit()
             }
+    }
+    
+    func markChatAsRead(currentUser: UserModel, otherUser: UserModel) {
+        
+        let chatId = createChatId(currentUser: currentUser, otherUser: otherUser)
+        let docId = "\(chatId)_\(currentUser.id ?? "")"
+        
+        db.collection("chatUserState")
+            .document(docId)
+            .setData([
+                "chatId": chatId,
+                "userId": currentUser.id ?? "",
+                "lastReadAt": FieldValue.serverTimestamp()
+            ], merge: true)
     }
     
     func deleteChatForMe(currentUser: UserModel, otherUser: UserModel) {

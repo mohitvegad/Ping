@@ -27,6 +27,10 @@ final class ChatRepository: ChatRepositoryProtocol {
     func deleteChatForMe(currentUser: UserModel, otherUser: UserModel) {
         service.deleteChatForMe(currentUser: currentUser, otherUser: otherUser)
     }
+    
+    func markChatAsRead(currentUser: UserModel, otherUser: UserModel) {
+        service.markChatAsRead(currentUser: currentUser, otherUser: otherUser)
+    }
 
     
 }

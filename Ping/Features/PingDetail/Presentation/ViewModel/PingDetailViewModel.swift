@@ -52,4 +52,8 @@ extension PingDetailViewModel {
     func markAsSeenIfNeeded() {
         repository.markMessagesAsSeen(currentUser: currentUser, otherUser: otherUser)
     }
+    
+    func maskAsChatRead() {
+        repository.markChatAsRead(currentUser: currentUser, otherUser: otherUser)
+    }
 }
