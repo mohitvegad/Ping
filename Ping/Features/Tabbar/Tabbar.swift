@@ -14,6 +14,10 @@ struct RootTabView: View {
         ZStack(alignment: .bottom) {
             Color.black.ignoresSafeArea()
             
+            let service = ChatService()
+            let repository = ChatRepository(service: service)
+            let viewModel = PingsViewViewModel(repository: repository)
+
             TabView {
                 // PING VIEW TAB
                 NavigationStack {

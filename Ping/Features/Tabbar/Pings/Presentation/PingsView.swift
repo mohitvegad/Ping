@@ -4,6 +4,7 @@ struct PingsView: View {
     
     @State private var path = NavigationPath()
     @State private var showAddUsersView = false
+    
     @StateObject var viewModel: PingsViewViewModel
     let currentUserId: String
     
@@ -11,14 +12,11 @@ struct PingsView: View {
     // MARK - INITIALIZATION
     //-------------------------------------
     
-    init(currentUserId: String) {
+    init(viewModel: PingsViewViewModel, currentUserId: String) {
+        _viewModel = StateObject(wrappedValue: viewModel)
         self.currentUserId = currentUserId
-        
-        let service = ChatService()
-        let repository = ChatRepository(service: service)
-        _viewModel = StateObject(wrappedValue: PingsViewViewModel(repository: repository))
     }
-    
+
     //-------------------------------------
     // MARK - VIEW BODY
     //-------------------------------------
