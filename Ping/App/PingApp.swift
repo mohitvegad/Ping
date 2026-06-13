@@ -5,6 +5,7 @@ import FirebaseCore
 struct PingApp: App {
     
     @StateObject private var appSession: AppSession
+    private let container: AppContainer
     
     //---------------------------
     // INITIALIZATION
@@ -15,6 +16,9 @@ struct PingApp: App {
         // MARK: Firebase Config
         FirebaseApp.configure()
         
+        // MARK: APP Container
+        self.container = AppContainer()
+
         // MARK: APP Session
         let authService = FirebaseAuthService()
         let authRepository = AuthRepository(authService: authService)
@@ -34,7 +38,7 @@ struct PingApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootView(appSession: appSession)
+            RootView(appSession: appSession, container: container)
                 .environmentObject(appSession)
                 .onAppear {
                     appSession.start()
