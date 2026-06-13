@@ -7,14 +7,16 @@ struct PingsView: View {
     
     @StateObject var viewModel: PingsViewViewModel
     let currentUserId: String
+    let container: AppContainer
     
     //-------------------------------------
     // MARK - INITIALIZATION
     //-------------------------------------
     
-    init(viewModel: PingsViewViewModel, currentUserId: String) {
+    init(viewModel: PingsViewViewModel, currentUserId: String, container: AppContainer) {
         _viewModel = StateObject(wrappedValue: viewModel)
         self.currentUserId = currentUserId
+        self.container = container
     }
 
     //-------------------------------------
@@ -25,7 +27,8 @@ struct PingsView: View {
         NavigationStack(path: $path) {
             List {
                 ForEach(viewModel.chats) { chat in
-                    PingCell(model: viewModel.makeCellModel(from: chat, currentUserId: currentUserId), configuration: .chat)
+                    let unread = viewModel.unreadCount(for: chat.id ?? kEmptyString)
+                    PingCell(model: viewModel.makeCellModel(from: chat, currentUserId: currentUserId, unreadCount: unread), configuration: .chat)
                         .contentShape(Rectangle())
                         .onTapGesture {
                             openChat(chat)
@@ -36,7 +39,6 @@ struct PingsView: View {
                             
                             Button(role: .destructive) {
                                 guard let currentUser = CurrentUserSession.shared.user else { return }
-                                
                                 let otherUserId = chat.otherUserId(currentUserId: currentUserId)
                                 guard let otherUser = UserStore.shared.user(id: otherUserId) else { return }
 
@@ -55,8 +57,7 @@ struct PingsView: View {
             // MARK: - NAVIGATION
             .navigationDestination(for: UserModel.self) { otherUser in
                 if let currentUser = CurrentUserSession.shared.user {
-                    PingDetailView(currentUser: currentUser, otherUser: otherUser, repository: ChatRepository(
-                        service: ChatService()))
+                    PingDetailView(currentUser: currentUser, otherUser: otherUser, repository: container.chatRepository)
                 }
             }
             
@@ -81,6 +82,9 @@ struct PingsView: View {
         }
         .onAppear {
             viewModel.loadChats(uid: currentUserId)
+            guard let currentUser = CurrentUserSession.shared.user else { return }
+            viewModel.loadChatStates(currentUser: currentUser)
+
         }
     }
 }

@@ -3,25 +3,23 @@ import SwiftUI
 struct RootTabView: View {
     
     @ObservedObject var appSession: AppSession
+    let container: AppContainer
     private let currentUserId: String
 
-    init(currentUserId: String, appSession: AppSession) {
-         self.currentUserId = currentUserId
-         self.appSession = appSession
+    init(currentUserId: String, appSession: AppSession, container: AppContainer) {
+        self.currentUserId = currentUserId
+        self.appSession = appSession
+        self.container = container
     }
     
     var body: some View {
         ZStack(alignment: .bottom) {
             Color.black.ignoresSafeArea()
             
-            let service = ChatService()
-            let repository = ChatRepository(service: service)
-            let viewModel = PingsViewViewModel(repository: repository)
-
             TabView {
                 // PING VIEW TAB
                 NavigationStack {
-                    PingsView(currentUserId: currentUserId)
+                    PingsView(viewModel: container.pingsViewModel, currentUserId: currentUserId, container: container)
                 }
                 .tabItem {
                     Label("Pings", systemImage: "message.fill")

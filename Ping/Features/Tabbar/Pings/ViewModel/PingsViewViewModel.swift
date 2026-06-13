@@ -4,7 +4,7 @@ import Combine
 final class PingsViewViewModel: ObservableObject {
 
     @Published var chats: [ChatModel] = []
-    @Published var pingCells: [PingCellModel] = []
+    @Published var chatStates: [ChatUserState] = []
     private let repository: ChatRepositoryProtocol
 
     //-------------------------------------
@@ -28,8 +28,16 @@ final class PingsViewViewModel: ObservableObject {
             }
         }
     }
-        
-    func makeCellModel(from chat: ChatModel, currentUserId: String) -> PingCellModel {
+    
+    func loadChatStates(currentUser: UserModel) {
+        repository.fetchChatUserStates(currentUser: currentUser) { [weak self] states in
+            DispatchQueue.main.async {
+                self?.chatStates = states
+            }
+        }
+    }
+    
+    func makeCellModel(from chat: ChatModel, currentUserId: String, unreadCount: Int) -> PingCellModel {
 
         let otherUserId = chat.otherUserId(currentUserId: currentUserId)
 
@@ -40,7 +48,7 @@ final class PingsViewViewModel: ObservableObject {
             imageName: "person.fill",
             title: "\(otherUser?.firstName ?? "") \(otherUser?.lastName ?? "")",
             subtitle: chat.lastMessage,
-            unreadCount: 0,
+            unreadCount: unreadCount,
             date: chat.updatedAt
         )
     }
@@ -49,5 +57,9 @@ final class PingsViewViewModel: ObservableObject {
         repository.deleteChatForMe(currentUser: currentUser, otherUser: otherUser)
     }
 
+    
+    func unreadCount(for chatId: String) -> Int {
+        chatStates.first(where: { $0.chatId == chatId })?.unreadCount ?? 0
+    }
 }
 
